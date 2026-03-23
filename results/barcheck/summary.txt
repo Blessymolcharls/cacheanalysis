@@ -1,0 +1,77 @@
+Cache Simulation Summary
+================================================================================
+
+Workload: matrix
+--------------------------------------------------------------------------------
+Block=16KB | Assoc=1-way | Accesses=12800 | Hits=511 | Misses=12289 | HitRate=0.039922 | MissRate=0.960078
+Block=16KB | Assoc=2-way | Accesses=12800 | Hits=511 | Misses=12289 | HitRate=0.039922 | MissRate=0.960078
+Block=16KB | Assoc=4-way | Accesses=12800 | Hits=12797 | Misses=3 | HitRate=0.999766 | MissRate=0.000234
+Block=16KB | Assoc=8-way | Accesses=12800 | Hits=12797 | Misses=3 | HitRate=0.999766 | MissRate=0.000234
+Block=32KB | Assoc=1-way | Accesses=12800 | Hits=511 | Misses=12289 | HitRate=0.039922 | MissRate=0.960078
+Block=32KB | Assoc=2-way | Accesses=12800 | Hits=511 | Misses=12289 | HitRate=0.039922 | MissRate=0.960078
+Block=32KB | Assoc=4-way | Accesses=12800 | Hits=12797 | Misses=3 | HitRate=0.999766 | MissRate=0.000234
+Block=32KB | Assoc=8-way | Accesses=12800 | Hits=12797 | Misses=3 | HitRate=0.999766 | MissRate=0.000234
+Block=64KB | Assoc=1-way | Accesses=12800 | Hits=511 | Misses=12289 | HitRate=0.039922 | MissRate=0.960078
+Block=64KB | Assoc=2-way | Accesses=12800 | Hits=511 | Misses=12289 | HitRate=0.039922 | MissRate=0.960078
+Block=64KB | Assoc=4-way | Accesses=12800 | Hits=12797 | Misses=3 | HitRate=0.999766 | MissRate=0.000234
+Block=64KB | Assoc=8-way | Accesses=12800 | Hits=12797 | Misses=3 | HitRate=0.999766 | MissRate=0.000234
+Block=128KB | Assoc=1-way | Accesses=12800 | Hits=511 | Misses=12289 | HitRate=0.039922 | MissRate=0.960078
+Block=128KB | Assoc=2-way | Accesses=12800 | Hits=511 | Misses=12289 | HitRate=0.039922 | MissRate=0.960078
+Block=128KB | Assoc=4-way | Accesses=12800 | Hits=12797 | Misses=3 | HitRate=0.999766 | MissRate=0.000234
+Block=128KB | Assoc=8-way | Accesses=12800 | Hits=12797 | Misses=3 | HitRate=0.999766 | MissRate=0.000234
+Block=256KB | Assoc=1-way | Accesses=12800 | Hits=511 | Misses=12289 | HitRate=0.039922 | MissRate=0.960078
+Block=256KB | Assoc=2-way | Accesses=12800 | Hits=511 | Misses=12289 | HitRate=0.039922 | MissRate=0.960078
+Block=256KB | Assoc=4-way | Accesses=12800 | Hits=12797 | Misses=3 | HitRate=0.999766 | MissRate=0.000234
+Block=256KB | Assoc=8-way | Accesses=12800 | Hits=12797 | Misses=3 | HitRate=0.999766 | MissRate=0.000234
+
+Workload: random
+--------------------------------------------------------------------------------
+Block=16KB | Assoc=1-way | Accesses=500 | Hits=23 | Misses=477 | HitRate=0.046000 | MissRate=0.954000
+Block=16KB | Assoc=2-way | Accesses=500 | Hits=24 | Misses=476 | HitRate=0.048000 | MissRate=0.952000
+Block=16KB | Assoc=4-way | Accesses=500 | Hits=26 | Misses=474 | HitRate=0.052000 | MissRate=0.948000
+Block=16KB | Assoc=8-way | Accesses=500 | Hits=25 | Misses=475 | HitRate=0.050000 | MissRate=0.950000
+Block=32KB | Assoc=1-way | Accesses=500 | Hits=29 | Misses=471 | HitRate=0.058000 | MissRate=0.942000
+Block=32KB | Assoc=2-way | Accesses=500 | Hits=32 | Misses=468 | HitRate=0.064000 | MissRate=0.936000
+Block=32KB | Assoc=4-way | Accesses=500 | Hits=33 | Misses=467 | HitRate=0.066000 | MissRate=0.934000
+Block=32KB | Assoc=8-way | Accesses=500 | Hits=35 | Misses=465 | HitRate=0.070000 | MissRate=0.930000
+Block=64KB | Assoc=1-way | Accesses=500 | Hits=29 | Misses=471 | HitRate=0.058000 | MissRate=0.942000
+Block=64KB | Assoc=2-way | Accesses=500 | Hits=32 | Misses=468 | HitRate=0.064000 | MissRate=0.936000
+Block=64KB | Assoc=4-way | Accesses=500 | Hits=33 | Misses=467 | HitRate=0.066000 | MissRate=0.934000
+Block=64KB | Assoc=8-way | Accesses=500 | Hits=37 | Misses=463 | HitRate=0.074000 | MissRate=0.926000
+Block=128KB | Assoc=1-way | Accesses=500 | Hits=28 | Misses=472 | HitRate=0.056000 | MissRate=0.944000
+Block=128KB | Assoc=2-way | Accesses=500 | Hits=33 | Misses=467 | HitRate=0.066000 | MissRate=0.934000
+Block=128KB | Assoc=4-way | Accesses=500 | Hits=33 | Misses=467 | HitRate=0.066000 | MissRate=0.934000
+Block=128KB | Assoc=8-way | Accesses=500 | Hits=33 | Misses=467 | HitRate=0.066000 | MissRate=0.934000
+Block=256KB | Assoc=1-way | Accesses=500 | Hits=29 | Misses=471 | HitRate=0.058000 | MissRate=0.942000
+Block=256KB | Assoc=2-way | Accesses=500 | Hits=29 | Misses=471 | HitRate=0.058000 | MissRate=0.942000
+Block=256KB | Assoc=4-way | Accesses=500 | Hits=28 | Misses=472 | HitRate=0.056000 | MissRate=0.944000
+Block=256KB | Assoc=8-way | Accesses=500 | Hits=31 | Misses=469 | HitRate=0.062000 | MissRate=0.938000
+
+Workload: sequential
+--------------------------------------------------------------------------------
+Block=16KB | Assoc=1-way | Accesses=500 | Hits=498 | Misses=2 | HitRate=0.996000 | MissRate=0.004000
+Block=16KB | Assoc=2-way | Accesses=500 | Hits=498 | Misses=2 | HitRate=0.996000 | MissRate=0.004000
+Block=16KB | Assoc=4-way | Accesses=500 | Hits=498 | Misses=2 | HitRate=0.996000 | MissRate=0.004000
+Block=16KB | Assoc=8-way | Accesses=500 | Hits=498 | Misses=2 | HitRate=0.996000 | MissRate=0.004000
+Block=32KB | Assoc=1-way | Accesses=500 | Hits=499 | Misses=1 | HitRate=0.998000 | MissRate=0.002000
+Block=32KB | Assoc=2-way | Accesses=500 | Hits=499 | Misses=1 | HitRate=0.998000 | MissRate=0.002000
+Block=32KB | Assoc=4-way | Accesses=500 | Hits=499 | Misses=1 | HitRate=0.998000 | MissRate=0.002000
+Block=32KB | Assoc=8-way | Accesses=500 | Hits=499 | Misses=1 | HitRate=0.998000 | MissRate=0.002000
+Block=64KB | Assoc=1-way | Accesses=500 | Hits=499 | Misses=1 | HitRate=0.998000 | MissRate=0.002000
+Block=64KB | Assoc=2-way | Accesses=500 | Hits=499 | Misses=1 | HitRate=0.998000 | MissRate=0.002000
+Block=64KB | Assoc=4-way | Accesses=500 | Hits=499 | Misses=1 | HitRate=0.998000 | MissRate=0.002000
+Block=64KB | Assoc=8-way | Accesses=500 | Hits=499 | Misses=1 | HitRate=0.998000 | MissRate=0.002000
+Block=128KB | Assoc=1-way | Accesses=500 | Hits=499 | Misses=1 | HitRate=0.998000 | MissRate=0.002000
+Block=128KB | Assoc=2-way | Accesses=500 | Hits=499 | Misses=1 | HitRate=0.998000 | MissRate=0.002000
+Block=128KB | Assoc=4-way | Accesses=500 | Hits=499 | Misses=1 | HitRate=0.998000 | MissRate=0.002000
+Block=128KB | Assoc=8-way | Accesses=500 | Hits=499 | Misses=1 | HitRate=0.998000 | MissRate=0.002000
+Block=256KB | Assoc=1-way | Accesses=500 | Hits=499 | Misses=1 | HitRate=0.998000 | MissRate=0.002000
+Block=256KB | Assoc=2-way | Accesses=500 | Hits=499 | Misses=1 | HitRate=0.998000 | MissRate=0.002000
+Block=256KB | Assoc=4-way | Accesses=500 | Hits=499 | Misses=1 | HitRate=0.998000 | MissRate=0.002000
+Block=256KB | Assoc=8-way | Accesses=500 | Hits=499 | Misses=1 | HitRate=0.998000 | MissRate=0.002000
+
+Key Insight Targets
+--------------------------------------------------------------------------------
+1. Hit rate often increases with block size initially, then may saturate.
+2. Miss rate often decreases initially, but may rise if conflicts dominate.
+3. Associativity tends to show diminishing returns beyond 4-way.

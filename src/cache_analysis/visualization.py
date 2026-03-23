@@ -7,6 +7,7 @@ from collections import defaultdict
 from typing import Dict, Iterable, List, Tuple
 
 import matplotlib.pyplot as plt
+import numpy as np
 
 from .models import ExperimentResult
 
@@ -25,6 +26,10 @@ class Plotter:
         miss_vs_block_name: str,
         hit_vs_assoc_name: str,
         miss_vs_assoc_name: str,
+        bar_hit_vs_block_name: str,
+        bar_miss_vs_block_name: str,
+        bar_hit_vs_assoc_name: str,
+        bar_miss_vs_assoc_name: str,
     ) -> Dict[str, str]:
         items = list(results)
         outputs: Dict[str, str] = {}
@@ -52,6 +57,30 @@ class Plotter:
             metric="miss",
             output_name=miss_vs_assoc_name,
             title="Associativity vs Miss Rate",
+        )
+        outputs["bar_hit_vs_block"] = self.plot_block_metric_bar(
+            items,
+            metric="hit",
+            output_name=bar_hit_vs_block_name,
+            title="Block Size vs Hit Rate (Bar)",
+        )
+        outputs["bar_miss_vs_block"] = self.plot_block_metric_bar(
+            items,
+            metric="miss",
+            output_name=bar_miss_vs_block_name,
+            title="Block Size vs Miss Rate (Bar)",
+        )
+        outputs["bar_hit_vs_assoc"] = self.plot_assoc_metric_bar(
+            items,
+            metric="hit",
+            output_name=bar_hit_vs_assoc_name,
+            title="Associativity vs Hit Rate (Bar)",
+        )
+        outputs["bar_miss_vs_assoc"] = self.plot_assoc_metric_bar(
+            items,
+            metric="miss",
+            output_name=bar_miss_vs_assoc_name,
+            title="Associativity vs Miss Rate (Bar)",
         )
 
         return outputs
@@ -100,6 +129,78 @@ class Plotter:
         ax.set_xlabel("Associativity (ways)")
         ax.set_ylabel("Rate")
         ax.grid(True, linestyle=":", alpha=0.5)
+        ax.legend()
+
+        path = os.path.join(self.output_dir, output_name)
+        fig.tight_layout()
+        fig.savefig(path)
+        plt.close(fig)
+        return path
+
+    def plot_block_metric_bar(
+        self,
+        results: List[ExperimentResult],
+        metric: str,
+        output_name: str,
+        title: str,
+    ) -> str:
+        series = _group_by_assoc(results, metric)
+
+        assoc_values = sorted(series.keys())
+        x_categories = sorted({x for points in series.values() for x, _ in points})
+        x = np.arange(len(x_categories))
+        width = 0.18
+
+        fig, ax = plt.subplots(figsize=(12, 6))
+        for idx, assoc in enumerate(assoc_values):
+            points = sorted(series[assoc], key=lambda item: item[0])
+            y_by_x = {xv: yv for xv, yv in points}
+            ys = [y_by_x.get(xv, 0.0) for xv in x_categories]
+            shift = (idx - (len(assoc_values) - 1) / 2) * width
+            ax.bar(x + shift, ys, width=width, label=f"{assoc}-way")
+
+        ax.set_title(title)
+        ax.set_xlabel("Block Size (KB)")
+        ax.set_ylabel("Rate")
+        ax.set_xticks(x)
+        ax.set_xticklabels([str(v) for v in x_categories])
+        ax.grid(True, axis="y", linestyle="--", alpha=0.35)
+        ax.legend()
+
+        path = os.path.join(self.output_dir, output_name)
+        fig.tight_layout()
+        fig.savefig(path)
+        plt.close(fig)
+        return path
+
+    def plot_assoc_metric_bar(
+        self,
+        results: List[ExperimentResult],
+        metric: str,
+        output_name: str,
+        title: str,
+    ) -> str:
+        series = _group_by_block(results, metric)
+
+        block_sizes = sorted(series.keys())
+        x_categories = sorted({x for points in series.values() for x, _ in points})
+        x = np.arange(len(x_categories))
+        width = 0.16
+
+        fig, ax = plt.subplots(figsize=(12, 6))
+        for idx, block in enumerate(block_sizes):
+            points = sorted(series[block], key=lambda item: item[0])
+            y_by_x = {xv: yv for xv, yv in points}
+            ys = [y_by_x.get(xv, 0.0) for xv in x_categories]
+            shift = (idx - (len(block_sizes) - 1) / 2) * width
+            ax.bar(x + shift, ys, width=width, label=f"{block} KB block")
+
+        ax.set_title(title)
+        ax.set_xlabel("Associativity (ways)")
+        ax.set_ylabel("Rate")
+        ax.set_xticks(x)
+        ax.set_xticklabels([str(v) for v in x_categories])
+        ax.grid(True, axis="y", linestyle=":", alpha=0.45)
         ax.legend()
 
         path = os.path.join(self.output_dir, output_name)

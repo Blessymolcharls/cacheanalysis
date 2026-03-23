@@ -199,6 +199,10 @@ In `results/` by default:
 - `plot_block_vs_miss_rate.png`
 - `plot_assoc_vs_hit_rate.png`
 - `plot_assoc_vs_miss_rate.png`
+- `bar_block_vs_hit_rate.png`
+- `bar_block_vs_miss_rate.png`
+- `bar_assoc_vs_hit_rate.png`
+- `bar_assoc_vs_miss_rate.png`
 
 ## Notes on Miss Classification
 

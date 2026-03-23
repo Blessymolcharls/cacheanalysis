@@ -33,9 +33,13 @@
       "plot_hit_vs_block": "plot_block_vs_hit_rate.png",
       "plot_miss_vs_block": "plot_block_vs_miss_rate.png",
       "plot_hit_vs_assoc": "plot_assoc_vs_hit_rate.png",
-      "plot_miss_vs_assoc": "plot_assoc_vs_miss_rate.png"
+      "plot_miss_vs_assoc": "plot_assoc_vs_miss_rate.png",
+      "bar_hit_vs_block": "bar_block_vs_hit_rate.png",
+      "bar_miss_vs_block": "bar_block_vs_miss_rate.png",
+      "bar_hit_vs_assoc": "bar_assoc_vs_hit_rate.png",
+      "bar_miss_vs_assoc": "bar_assoc_vs_miss_rate.png"
     },
-    "elapsed_seconds": 106.50727350699981
+    "elapsed_seconds": 100.59063973299999
   },
   "results": [
     {
@@ -44,7 +48,7 @@
       "associativity": 1,
       "replacement_policy": "LRU",
       "workload_name": "sequential",
-      "runtime_seconds": 0.4217327670003215,
+      "runtime_seconds": 0.2822154750001573,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 391/0/0",
@@ -78,7 +82,7 @@
       "associativity": 2,
       "replacement_policy": "LRU",
       "workload_name": "sequential",
-      "runtime_seconds": 0.39266198499990423,
+      "runtime_seconds": 0.2741500749998522,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 391/0/0",
@@ -112,7 +116,7 @@
       "associativity": 4,
       "replacement_policy": "LRU",
       "workload_name": "sequential",
-      "runtime_seconds": 0.39294340900050884,
+      "runtime_seconds": 0.25919698899997456,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 391/0/0",
@@ -146,7 +150,7 @@
       "associativity": 8,
       "replacement_policy": "LRU",
       "workload_name": "sequential",
-      "runtime_seconds": 0.4027149000003192,
+      "runtime_seconds": 0.25348685900007695,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 391/0/0",
@@ -180,7 +184,7 @@
       "associativity": 1,
       "replacement_policy": "LRU",
       "workload_name": "sequential",
-      "runtime_seconds": 0.3981797389997155,
+      "runtime_seconds": 0.2501192390000142,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 196/0/0",
@@ -214,7 +218,7 @@
       "associativity": 2,
       "replacement_policy": "LRU",
       "workload_name": "sequential",
-      "runtime_seconds": 0.3977177839997239,
+      "runtime_seconds": 0.2589883569999074,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 196/0/0",
@@ -248,7 +252,7 @@
       "associativity": 4,
       "replacement_policy": "LRU",
       "workload_name": "sequential",
-      "runtime_seconds": 0.39819226500003424,
+      "runtime_seconds": 0.24934614100038743,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 196/0/0",
@@ -282,7 +286,7 @@
       "associativity": 8,
       "replacement_policy": "LRU",
       "workload_name": "sequential",
-      "runtime_seconds": 0.3859957989998293,
+      "runtime_seconds": 0.26419310300025245,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 196/0/0",
@@ -316,7 +320,7 @@
       "associativity": 1,
       "replacement_policy": "LRU",
       "workload_name": "sequential",
-      "runtime_seconds": 0.3831512520000615,
+      "runtime_seconds": 0.2452548659994136,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 98/0/0",
@@ -350,7 +354,7 @@
       "associativity": 2,
       "replacement_policy": "LRU",
       "workload_name": "sequential",
-      "runtime_seconds": 0.3988841970003705,
+      "runtime_seconds": 0.24717226199936704,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 98/0/0",
@@ -384,7 +388,7 @@
       "associativity": 4,
       "replacement_policy": "LRU",
       "workload_name": "sequential",
-      "runtime_seconds": 0.38044168899978104,
+      "runtime_seconds": 0.25342935800017585,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 98/0/0",
@@ -418,7 +422,7 @@
       "associativity": 8,
       "replacement_policy": "LRU",
       "workload_name": "sequential",
-      "runtime_seconds": 0.42729212299946084,
+      "runtime_seconds": 0.2871261410000443,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 98/0/0",
@@ -452,7 +456,7 @@
       "associativity": 1,
       "replacement_policy": "LRU",
       "workload_name": "sequential",
-      "runtime_seconds": 0.3820638240003973,
+      "runtime_seconds": 0.2654101570005878,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 49/0/0",
@@ -486,7 +490,7 @@
       "associativity": 2,
       "replacement_policy": "LRU",
       "workload_name": "sequential",
-      "runtime_seconds": 0.38514368500000273,
+      "runtime_seconds": 0.2562021249996178,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 49/0/0",
@@ -520,7 +524,7 @@
       "associativity": 4,
       "replacement_policy": "LRU",
       "workload_name": "sequential",
-      "runtime_seconds": 0.3807540119996702,
+      "runtime_seconds": 0.2574438840001676,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 49/0/0",
@@ -554,7 +558,7 @@
       "associativity": 8,
       "replacement_policy": "LRU",
       "workload_name": "sequential",
-      "runtime_seconds": 0.3767440239998905,
+      "runtime_seconds": 0.25212722499964,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 49/0/0",
@@ -588,7 +592,7 @@
       "associativity": 1,
       "replacement_policy": "LRU",
       "workload_name": "sequential",
-      "runtime_seconds": 0.38942399699953967,
+      "runtime_seconds": 0.24665003899917792,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 25/0/0",
@@ -622,7 +626,7 @@
       "associativity": 2,
       "replacement_policy": "LRU",
       "workload_name": "sequential",
-      "runtime_seconds": 0.3908306579996861,
+      "runtime_seconds": 0.2602301269998861,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 25/0/0",
@@ -656,7 +660,7 @@
       "associativity": 4,
       "replacement_policy": "LRU",
       "workload_name": "sequential",
-      "runtime_seconds": 0.3809333749995858,
+      "runtime_seconds": 0.26265648400021746,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 25/0/0",
@@ -690,7 +694,7 @@
       "associativity": 8,
       "replacement_policy": "LRU",
       "workload_name": "sequential",
-      "runtime_seconds": 0.37319391099936183,
+      "runtime_seconds": 0.26047211199966114,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 25/0/0",
@@ -724,7 +728,7 @@
       "associativity": 1,
       "replacement_policy": "LRU",
       "workload_name": "random",
-      "runtime_seconds": 0.5684920469993813,
+      "runtime_seconds": 0.37331556500066654,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 2048/6082/85518",
@@ -758,7 +762,7 @@
       "associativity": 2,
       "replacement_policy": "LRU",
       "workload_name": "random",
-      "runtime_seconds": 0.5630584509999608,
+      "runtime_seconds": 0.36623435000001336,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 2048/6077/85489",
@@ -792,7 +796,7 @@
       "associativity": 4,
       "replacement_policy": "LRU",
       "workload_name": "random",
-      "runtime_seconds": 0.5550703600001725,
+      "runtime_seconds": 0.3656695010004114,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 2048/6068/85539",
@@ -826,7 +830,7 @@
       "associativity": 8,
       "replacement_policy": "LRU",
       "workload_name": "random",
-      "runtime_seconds": 0.5527002580001863,
+      "runtime_seconds": 0.3762905049998153,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 2048/6071/85587",
@@ -860,7 +864,7 @@
       "associativity": 1,
       "replacement_policy": "LRU",
       "workload_name": "random",
-      "runtime_seconds": 0.6247922910006309,
+      "runtime_seconds": 0.3947005079999144,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 1024/6283/86408",
@@ -894,7 +898,7 @@
       "associativity": 2,
       "replacement_policy": "LRU",
       "workload_name": "random",
-      "runtime_seconds": 0.5687123600000632,
+      "runtime_seconds": 0.3740323370002443,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 1024/6289/86430",
@@ -928,7 +932,7 @@
       "associativity": 4,
       "replacement_policy": "LRU",
       "workload_name": "random",
-      "runtime_seconds": 0.5981950040004449,
+      "runtime_seconds": 0.37546188600026653,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 1024/6281/86344",
@@ -962,7 +966,7 @@
       "associativity": 8,
       "replacement_policy": "LRU",
       "workload_name": "random",
-      "runtime_seconds": 0.5802631440001278,
+      "runtime_seconds": 0.3630424490002042,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 1024/6285/86381",
@@ -996,7 +1000,7 @@
       "associativity": 1,
       "replacement_policy": "LRU",
       "workload_name": "random",
-      "runtime_seconds": 0.568008811999789,
+      "runtime_seconds": 0.35265111199987587,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 512/3246/90012",
@@ -1030,7 +1034,7 @@
       "associativity": 2,
       "replacement_policy": "LRU",
       "workload_name": "random",
-      "runtime_seconds": 0.6394471769999654,
+      "runtime_seconds": 0.3641904189998968,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 512/3267/90014",
@@ -1064,7 +1068,7 @@
       "associativity": 4,
       "replacement_policy": "LRU",
       "workload_name": "random",
-      "runtime_seconds": 0.6252613460001157,
+      "runtime_seconds": 0.36847237100027996,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 512/3266/90067",
@@ -1098,7 +1102,7 @@
       "associativity": 8,
       "replacement_policy": "LRU",
       "workload_name": "random",
-      "runtime_seconds": 0.5686593639993589,
+      "runtime_seconds": 0.35692761700011033,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 512/3270/89996",
@@ -1132,7 +1136,7 @@
       "associativity": 1,
       "replacement_policy": "LRU",
       "workload_name": "random",
-      "runtime_seconds": 0.5088091600000553,
+      "runtime_seconds": 0.35431519800022215,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 256/1728/91632",
@@ -1166,7 +1170,7 @@
       "associativity": 2,
       "replacement_policy": "LRU",
       "workload_name": "random",
-      "runtime_seconds": 0.520598451999831,
+      "runtime_seconds": 0.3426813209998727,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 256/1713/91681",
@@ -1200,7 +1204,7 @@
       "associativity": 4,
       "replacement_policy": "LRU",
       "workload_name": "random",
-      "runtime_seconds": 0.5234948699999222,
+      "runtime_seconds": 0.34523672300019825,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 256/1710/91699",
@@ -1234,7 +1238,7 @@
       "associativity": 8,
       "replacement_policy": "LRU",
       "workload_name": "random",
-      "runtime_seconds": 0.49683209099930536,
+      "runtime_seconds": 0.357296056999985,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 256/1709/91662",
@@ -1268,7 +1272,7 @@
       "associativity": 1,
       "replacement_policy": "LRU",
       "workload_name": "random",
-      "runtime_seconds": 0.5582821600000898,
+      "runtime_seconds": 0.356903328000044,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 128/945/92523",
@@ -1302,7 +1306,7 @@
       "associativity": 2,
       "replacement_policy": "LRU",
       "workload_name": "random",
-      "runtime_seconds": 0.6140099860003829,
+      "runtime_seconds": 0.33971916000064084,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 128/944/92568",
@@ -1336,7 +1340,7 @@
       "associativity": 4,
       "replacement_policy": "LRU",
       "workload_name": "random",
-      "runtime_seconds": 0.6854678239997156,
+      "runtime_seconds": 0.4094775310004479,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 128/939/92586",
@@ -1370,7 +1374,7 @@
       "associativity": 8,
       "replacement_policy": "LRU",
       "workload_name": "random",
-      "runtime_seconds": 0.6256676140001218,
+      "runtime_seconds": 0.38037668699962524,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 128/944/92595",
@@ -1404,7 +1408,7 @@
       "associativity": 1,
       "replacement_policy": "LRU",
       "workload_name": "matrix",
-      "runtime_seconds": 4.790354760999435,
+      "runtime_seconds": 4.038848199000313,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 6/655359/0",
@@ -1438,7 +1442,7 @@
       "associativity": 2,
       "replacement_policy": "LRU",
       "workload_name": "matrix",
-      "runtime_seconds": 5.2529336320003495,
+      "runtime_seconds": 6.935202906000086,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 6/393215/0",
@@ -1472,7 +1476,7 @@
       "associativity": 4,
       "replacement_policy": "LRU",
       "workload_name": "matrix",
-      "runtime_seconds": 4.770063173000381,
+      "runtime_seconds": 3.692931222999505,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 6/0/0",
@@ -1506,7 +1510,7 @@
       "associativity": 8,
       "replacement_policy": "LRU",
       "workload_name": "matrix",
-      "runtime_seconds": 4.444203985000058,
+      "runtime_seconds": 4.605103420999512,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 6/0/0",
@@ -1540,7 +1544,7 @@
       "associativity": 1,
       "replacement_policy": "LRU",
       "workload_name": "matrix",
-      "runtime_seconds": 4.882737670000097,
+      "runtime_seconds": 6.283703138000419,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 3/786430/0",
@@ -1574,7 +1578,7 @@
       "associativity": 2,
       "replacement_policy": "LRU",
       "workload_name": "matrix",
-      "runtime_seconds": 4.691952098999536,
+      "runtime_seconds": 5.639869921999889,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 3/786430/0",
@@ -1608,7 +1612,7 @@
       "associativity": 4,
       "replacement_policy": "LRU",
       "workload_name": "matrix",
-      "runtime_seconds": 3.510676427999897,
+      "runtime_seconds": 3.500137545999678,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 3/0/0",
@@ -1642,7 +1646,7 @@
       "associativity": 8,
       "replacement_policy": "LRU",
       "workload_name": "matrix",
-      "runtime_seconds": 3.2821147069998915,
+      "runtime_seconds": 4.188963030000195,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 3/0/0",
@@ -1676,7 +1680,7 @@
       "associativity": 1,
       "replacement_policy": "LRU",
       "workload_name": "matrix",
-      "runtime_seconds": 4.479442042999835,
+      "runtime_seconds": 6.1696983099991485,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 3/786430/0",
@@ -1710,7 +1714,7 @@
       "associativity": 2,
       "replacement_policy": "LRU",
       "workload_name": "matrix",
-      "runtime_seconds": 4.400263636999625,
+      "runtime_seconds": 8.345596320000368,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 3/786430/0",
@@ -1744,7 +1748,7 @@
       "associativity": 4,
       "replacement_policy": "LRU",
       "workload_name": "matrix",
-      "runtime_seconds": 3.4534822559999157,
+      "runtime_seconds": 5.011966067000685,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 3/0/0",
@@ -1778,7 +1782,7 @@
       "associativity": 8,
       "replacement_policy": "LRU",
       "workload_name": "matrix",
-      "runtime_seconds": 3.5280481509998936,
+      "runtime_seconds": 3.1335537909999402,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 3/0/0",
@@ -1812,7 +1816,7 @@
       "associativity": 1,
       "replacement_policy": "LRU",
       "workload_name": "matrix",
-      "runtime_seconds": 4.251629202000004,
+      "runtime_seconds": 3.3462710389994754,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 3/786430/0",
@@ -1846,7 +1850,7 @@
       "associativity": 2,
       "replacement_policy": "LRU",
       "workload_name": "matrix",
-      "runtime_seconds": 4.694658005999372,
+      "runtime_seconds": 3.2850594659994385,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 3/786430/0",
@@ -1880,7 +1884,7 @@
       "associativity": 4,
       "replacement_policy": "LRU",
       "workload_name": "matrix",
-      "runtime_seconds": 3.37890764399981,
+      "runtime_seconds": 2.6170206760007204,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 3/0/0",
@@ -1914,7 +1918,7 @@
       "associativity": 8,
       "replacement_policy": "LRU",
       "workload_name": "matrix",
-      "runtime_seconds": 3.3577404509996995,
+      "runtime_seconds": 2.575427079000292,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 3/0/0",
@@ -1948,7 +1952,7 @@
       "associativity": 1,
       "replacement_policy": "LRU",
       "workload_name": "matrix",
-      "runtime_seconds": 4.321506422000311,
+      "runtime_seconds": 3.1604533899999296,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 3/786430/0",
@@ -1982,7 +1986,7 @@
       "associativity": 2,
       "replacement_policy": "LRU",
       "workload_name": "matrix",
-      "runtime_seconds": 4.579660231000162,
+      "runtime_seconds": 3.4053217179998683,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 3/786430/0",
@@ -2016,7 +2020,7 @@
       "associativity": 4,
       "replacement_policy": "LRU",
       "workload_name": "matrix",
-      "runtime_seconds": 3.355850953999834,
+      "runtime_seconds": 2.5932275949999166,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 3/0/0",
@@ -2050,7 +2054,7 @@
       "associativity": 8,
       "replacement_policy": "LRU",
       "workload_name": "matrix",
-      "runtime_seconds": 3.4976805420001256,
+      "runtime_seconds": 2.6034644210003535,
       "notes": [
         "Validated rates: hit+miss=1.000000",
         "Miss breakdown (C/C/Cp): 3/0/0",

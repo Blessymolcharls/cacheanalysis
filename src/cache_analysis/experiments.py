@@ -103,6 +103,10 @@ class ExperimentRunner:
             miss_vs_block_name=out_cfg.plot_miss_vs_block,
             hit_vs_assoc_name=out_cfg.plot_hit_vs_assoc,
             miss_vs_assoc_name=out_cfg.plot_miss_vs_assoc,
+            bar_hit_vs_block_name=out_cfg.bar_hit_vs_block,
+            bar_miss_vs_block_name=out_cfg.bar_miss_vs_block,
+            bar_hit_vs_assoc_name=out_cfg.bar_hit_vs_assoc,
+            bar_miss_vs_assoc_name=out_cfg.bar_miss_vs_assoc,
         )
 
         outputs = {

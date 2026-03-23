@@ -112,6 +112,11 @@ class OutputConfig:
     plot_hit_vs_assoc: str = "plot_assoc_vs_hit_rate.png"
     plot_miss_vs_assoc: str = "plot_assoc_vs_miss_rate.png"
 
+    bar_hit_vs_block: str = "bar_block_vs_hit_rate.png"
+    bar_miss_vs_block: str = "bar_block_vs_miss_rate.png"
+    bar_hit_vs_assoc: str = "bar_assoc_vs_hit_rate.png"
+    bar_miss_vs_assoc: str = "bar_assoc_vs_miss_rate.png"
+
 
 @dataclass
 class ExperimentConfig:
