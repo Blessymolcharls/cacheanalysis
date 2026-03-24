@@ -1,4 +1,10 @@
-"""Result export and textual reporting helpers."""
+"""Result export and textual reporting helpers.
+
+FIX: write_csv now unions fieldnames across ALL rows before writing so that
+     failed-run rows (which have the same schema but status='failed') never
+     cause KeyError in the DictWriter.  build_summary_text also reports failed
+     configurations explicitly.
+"""
 
 from __future__ import annotations
 
@@ -27,9 +33,28 @@ class ResultWriter:
                 handle.write("")
             return path
 
-        fieldnames = sorted(rows[0].keys())
+        # FIX: Build fieldnames as the UNION of all row keys, not just row[0].
+        #      Failed vs successful rows always share the same schema after our
+        #      models.py changes, but this union approach is robust to any future
+        #      schema divergence.
+        all_keys: set = set()
+        for row in rows:
+            all_keys.update(row.keys())
+        # IMPROVEMENT: Sort for deterministic column order; put key columns first.
+        priority = [
+            "workload_name", "cache_size_kb", "block_size_bytes",
+            "block_size_kb", "associativity", "replacement_policy",
+            "status", "hit_rate", "miss_rate", "hits", "misses",
+            "total_accesses", "runtime_seconds", "failure_reason", "notes",
+        ]
+        ordered = [k for k in priority if k in all_keys]
+        remainder = sorted(all_keys - set(ordered))
+        fieldnames = ordered + remainder
+
         with open(path, "w", encoding="utf-8", newline="") as handle:
-            writer = csv.DictWriter(handle, fieldnames=fieldnames)
+            writer = csv.DictWriter(
+                handle, fieldnames=fieldnames, extrasaction="ignore"
+            )
             writer.writeheader()
             writer.writerows(rows)
 
@@ -50,7 +75,11 @@ class ResultWriter:
 
 
 def build_summary_text(results: List[ExperimentResult]) -> str:
-    """Build human-readable report with key trends and spot checks."""
+    """Build human-readable report with key trends and spot checks.
+
+    IMPROVEMENT: Now shows failed configurations clearly so experimenters can
+                 quickly identify which geometries need investigation.
+    """
 
     lines: List[str] = []
     lines.append("Cache Simulation Summary")
@@ -61,22 +90,35 @@ def build_summary_text(results: List[ExperimentResult]) -> str:
         lines.append("No results available.")
         return "\n".join(lines)
 
+    # FIX: Separate successful from failed results for the summary.
+    _FAILED_SENTINEL = "status=failed"
+    successful = [r for r in results if not any(_FAILED_SENTINEL in n for n in r.notes)]
+    failed = [r for r in results if any(_FAILED_SENTINEL in n for n in r.notes)]
+
+    lines.append(f"Total configurations: {len(results)}")
+    lines.append(f"  Successful: {len(successful)}")
+    lines.append(f"  Failed:     {len(failed)}")
+    lines.append("")
+
+    # ------------------------------------------------------------------
+    # Successful results section
+    # ------------------------------------------------------------------
     by_workload: Dict[str, List[ExperimentResult]] = defaultdict(list)
-    for result in results:
+    for result in successful:
         by_workload[result.key.workload_name].append(result)
 
     for workload, group in sorted(by_workload.items()):
         lines.append(f"Workload: {workload}")
         lines.append("-" * 80)
 
-        # Sort by block then associativity for stable comparisons.
-        group = sorted(group, key=lambda r: (r.key.block_size_kb, r.key.associativity))
+        # Sort by block bytes then associativity for stable comparisons.
+        group = sorted(group, key=lambda r: (r.key.block_size_bytes, r.key.associativity))
 
         for result in group:
             lines.append(
                 " | ".join(
                     [
-                        f"Block={result.key.block_size_kb}KB",
+                        f"Block={result.key.block_size_bytes}B",
                         f"Assoc={result.key.associativity}-way",
                         f"Accesses={result.counters.total_accesses}",
                         f"Hits={result.counters.hits}",
@@ -87,6 +129,34 @@ def build_summary_text(results: List[ExperimentResult]) -> str:
                 )
             )
 
+        lines.append("")
+
+    # ------------------------------------------------------------------
+    # IMPROVEMENT: Failed results section — always shown when failures exist.
+    # ------------------------------------------------------------------
+    if failed:
+        lines.append("FAILED Configurations")
+        lines.append("-" * 80)
+        lines.append("  These runs did not produce valid stats.txt output.")
+        lines.append("  Check per-run stderr.log for the root cause.")
+        lines.append("")
+        failed = sorted(failed, key=lambda r: (r.key.block_size_bytes, r.key.associativity))
+        for result in failed:
+            reason = "unknown"
+            stderr_log = ""
+            for note in result.notes:
+                if note.startswith("failure_reason="):
+                    reason = note[len("failure_reason="):]
+                if note.startswith("stderr_log="):
+                    stderr_log = note[len("stderr_log="):]
+            line = (
+                f"  Block={result.key.block_size_bytes}B "
+                f"Assoc={result.key.associativity}-way "
+                f"| reason: {reason}"
+            )
+            if stderr_log:
+                line += f"\n    → see {stderr_log}"
+            lines.append(line)
         lines.append("")
 
     lines.append("Key Insight Targets")

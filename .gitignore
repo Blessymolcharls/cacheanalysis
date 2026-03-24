@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+results/*/gem5_runs/
+results/gem5_smoke*/
+results/smoke*/
+*.tmp
+*.out
+full_terminal_output.txt
+.DS_Store

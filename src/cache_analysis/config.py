@@ -1,17 +1,20 @@
-"""Configuration types and defaults for cache experiments.
-
-The framework models a fixed cache size while sweeping block sizes and
-associativity levels. The default ranges are intentionally aligned with the
-problem statement and are validated here to avoid invalid experiments later.
-"""
+"""Configuration types and defaults for gem5 cache experiments."""
 
 from __future__ import annotations
 
+import shutil
 from dataclasses import dataclass, field
 from typing import Iterable, List
 
-DEFAULT_CACHE_SIZE_KB = 2048
-DEFAULT_BLOCK_SIZES_KB = [16, 32, 64, 128, 256]
+DEFAULT_CACHE_SIZE_KB = 32
+# SKIP: 16B excluded — triggers AVX-VNNI (opcode 0f38/0x59) panic in gem5's
+# TimingSimpleCPU because the benchmark binary uses instructions not yet
+# implemented by this gem5 build.  Also architecturally atypical (real
+# hardware standardised on 64B blocks).  Remove this comment and add 16 back
+# once the benchmark is recompiled with -march=x86-64 (no AVX-VNNI).
+DEFAULT_BLOCK_SIZES_BYTES = [32, 64, 128, 256]
+# Backward-compatible alias used by existing imports/call sites.
+DEFAULT_BLOCK_SIZES_KB = DEFAULT_BLOCK_SIZES_BYTES
 DEFAULT_ASSOCIATIVITIES = [1, 2, 4, 8]
 DEFAULT_REPLACEMENT_POLICY = "LRU"
 DEFAULT_ADDRESS_SPACE_BITS = 32
@@ -23,7 +26,7 @@ class CacheGeometry:
 
     Attributes:
         cache_size_kb: Total cache capacity in KB.
-        block_size_kb: Block size in KB.
+        block_size_kb: Block size in bytes (legacy field name retained).
         associativity: Number of ways per set.
         address_space_bits: Width of simulated addresses.
     """
@@ -39,7 +42,7 @@ class CacheGeometry:
 
     @property
     def block_size_bytes(self) -> int:
-        return self.block_size_kb * 1024
+        return self.block_size_kb
 
     @property
     def num_blocks(self) -> int:
@@ -80,25 +83,6 @@ class CacheGeometry:
 
 
 @dataclass
-class WorkloadConfig:
-    """Workload generation parameters.
-
-    These defaults are chosen to produce visible trends for both locality-heavy
-    and locality-poor access patterns.
-    """
-
-    sequential_accesses: int = 100_000
-    sequential_stride: int = 64
-
-    random_accesses: int = 100_000
-    random_address_limit_bytes: int = 32 * 1024 * 1024
-    random_seed: int = 7
-
-    matrix_dimension: int = 64
-    matrix_element_size_bytes: int = 8
-
-
-@dataclass
 class OutputConfig:
     """Output paths for experiment artifacts."""
 
@@ -120,15 +104,13 @@ class OutputConfig:
 
 @dataclass
 class ExperimentConfig:
-    """Top-level configuration for full factorial experiments."""
+    """Top-level configuration for full factorial gem5 experiments."""
 
     cache_size_kb: int = DEFAULT_CACHE_SIZE_KB
     block_sizes_kb: List[int] = field(default_factory=lambda: list(DEFAULT_BLOCK_SIZES_KB))
     associativities: List[int] = field(default_factory=lambda: list(DEFAULT_ASSOCIATIVITIES))
     replacement_policy: str = DEFAULT_REPLACEMENT_POLICY
     address_space_bits: int = DEFAULT_ADDRESS_SPACE_BITS
-
-    workloads: WorkloadConfig = field(default_factory=WorkloadConfig)
     output: OutputConfig = field(default_factory=OutputConfig)
 
     def validate(self) -> None:
@@ -166,6 +148,54 @@ class ExperimentConfig:
                 geometry.validate()
                 geometries.append(geometry)
         return geometries
+
+
+@dataclass
+class Gem5RunConfig:
+    """Configuration for executing experiments with the real gem5 simulator.
+
+    This mode runs one benchmark binary repeatedly while sweeping cache geometry.
+    The classic cache model is configured as L1 D-cache only for direct
+    hit/miss extraction from gem5 stats.
+    """
+
+    gem5_config_script: str
+    benchmark_binary: str
+    gem5_binary: str = ""
+
+    benchmark_args: str = ""
+    workload_name: str = "gem5_workload"
+
+    cpu_type: str = "TimingSimpleCPU"
+    mem_size: str = "2GB"
+    max_ticks: int = 0
+
+    stats_hits_key: str = ""
+    stats_misses_key: str = ""
+
+    output_subdir: str = "gem5_runs"
+
+    resolved_gem5_binary: str = ""
+
+    def validate(self) -> None:
+        if self.gem5_binary.strip():
+            self.resolved_gem5_binary = self.gem5_binary.strip()
+        else:
+            detected = shutil.which("gem5.opt")
+            if not detected:
+                raise FileNotFoundError(
+                    "gem5 binary not found. Install gem5 and either add gem5.opt to PATH "
+                    "or pass --gem5-binary /path/to/gem5.opt."
+                )
+            self.resolved_gem5_binary = detected
+        if not self.gem5_config_script.strip():
+            raise ValueError("gem5_config_script must be provided")
+        if not self.benchmark_binary.strip():
+            raise ValueError("benchmark_binary must be provided")
+        if not self.workload_name.strip():
+            raise ValueError("workload_name must be provided")
+        if self.max_ticks < 0:
+            raise ValueError("max_ticks must be >= 0")
 
 
 def _validate_positive_int_list(name: str, values: Iterable[int]) -> None:

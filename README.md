@@ -1,153 +1,50 @@
-# Cache Simulation and Analysis Framework (gem5-style)
+# Cache Analysis Framework (gem5-only)
 
-This repository provides a detailed, modular cache simulation framework inspired
-by architectural exploration workflows commonly used with gem5.
+This project uses gem5 exclusively for cache simulation.
 
-It focuses on analyzing the impact of:
+The framework automates cache parameter sweeps, parses `stats.txt`, and exports
+CSV/JSON reports with plots.
 
-- Cache block size
-- Cache associativity
-- LRU replacement policy
+## What It Runs
 
-while reporting detailed metrics and miss classifications.
+- Single backend: gem5 executable
+- Sweep dimensions:
+	- Cache size (KB)
+	- Block size (KB)
+	- Associativity (ways)
+- Replacement policy target: LRU (configured in gem5 classic cache setup)
 
-## Implemented Requirements
+## Key Metrics
 
-### 1. Cache Configuration
+For every run, the framework extracts from gem5 stats:
 
-- Fixed cache size (default 2048 KB; configurable)
-- Block sizes: 16 KB, 32 KB, 64 KB, 128 KB, 256 KB (default sweep)
-- Associativity levels: 1-way, 2-way, 4-way, 8-way (default sweep)
-- Replacement policy: LRU
-
-### 2. Performance Metrics
-
-For each experiment:
-
-- Total accesses
-- Hits
-- Misses
-- Hit rate = hits / total_accesses
-- Miss rate = misses / total_accesses
-
-The framework validates:
-
-- `hits + misses == total_accesses`
-- `hit_rate + miss_rate == 1`
-
-Also tracked:
-
-- Load and store counts
-- Miss breakdown: compulsory, conflict, capacity
-
-### 3. Simulation Engine
-
-- Supports load/store access stream simulation
-- Per-access update of cache state and counters
-- Modular access pipeline:
-  - Address decode
-  - Cache lookup
-  - LRU update
-  - Miss classification
-
-### 4. LRU Replacement Policy
-
-- Independent per-set LRU tracker
-- Updated on every hit
-- Evicts least-recently-used line on miss when set is full
-
-### 5. Address Breakdown
-
-Each address is split into:
-
-- Tag
-- Index
-- Offset
-
-Implemented via `AddressDecoder` in `addressing.py`.
-
-### 6. Experimental Goals
-
-The framework produces data to verify key observations:
-
-1. Associativity beyond 4-way or 8-way tends to show diminishing returns.
-2. Larger blocks initially help due to spatial locality, then can hurt due to
-   reduced number of sets and increased conflict pressure.
-
-### 7. Automation
-
-Runs all combinations automatically:
-
-- 5 block sizes x 4 associativity levels = 20 cache geometries
-- Across 3 workloads by default = 60 experiment runs
-
-Outputs:
-
-- CSV file
-- JSON file
-- Summary text
-
-### 8. Visualization
-
-Automatically generates graphs:
-
-- Block size vs hit rate
-- Block size vs miss rate
-- Associativity vs hit rate
-- Associativity vs miss rate
-
-### 9. Benchmark Workloads
-
-Included workloads:
-
-- Sequential access (high spatial locality)
-- Random access (low locality)
-- Matrix operation pattern (mixed locality)
-
-### 10. Example Output
-
-Example record formatting:
-
-```
-Block Size: 64 KB
-Associativity: 4-way
-Total Accesses: 100000
-Hits: 85000
-Misses: 15000
-Hit Rate: 0.850000
-Miss Rate: 0.150000
-```
+- hits
+- misses
+- total accesses (`hits + misses`)
+- hit rate (`hits / total_accesses`)
+- miss rate (`misses / total_accesses`)
 
 ## Project Structure
 
 ```
 CacheAnalysis/
-  main.py
-  requirements.txt
-  README.md
-  src/cache_analysis/
-    __init__.py
-    __main__.py
-    cli.py
-    config.py
-    models.py
-    addressing.py
-    cache_core.py
-    miss_classifier.py
-    simulator.py
-    experiments.py
-    reporting.py
-    visualization.py
-    logging_config.py
-    replacement/
-      lru.py
-    workloads/
-      __init__.py
-      base.py
-      sequential.py
-      random_access.py
-      matrix_ops.py
-  results/
+	main.py
+	requirements.txt
+	README.md
+	scripts/
+		gem5_cache_sweep.py
+	src/cache_analysis/
+		__init__.py
+		__main__.py
+		cli.py
+		config.py
+		gem5_runner.py
+		gem5_stats.py
+		logging_config.py
+		models.py
+		reporting.py
+		visualization.py
+	results/
 ```
 
 ## Installation
@@ -160,37 +57,57 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+## gem5 Requirement
+
+gem5 must be installed.
+
+The CLI will fail fast if gem5 is unavailable and prints a clear error:
+
+`gem5 binary not found. Install gem5 and either add gem5.opt to PATH or pass --gem5-binary /path/to/gem5.opt.`
+
 ## Usage
 
-### Default Full Sweep
-
-```bash
-PYTHONPATH=src python3 main.py --print-config --print-examples
-```
-
-### Custom Sweep
+Run from repository root:
 
 ```bash
 PYTHONPATH=src python3 main.py \
-  --cache-size-kb 2048 \
-  --block-sizes-kb 16 32 64 128 256 \
-  --associativities 1 2 4 8 \
-  --replacement-policy LRU \
-  --seq-accesses 120000 \
-  --rand-accesses 120000 \
-  --matrix-dim 96 \
-  --output-dir results
+	--gem5-binary /path/to/gem5/build/X86/gem5.opt \
+	--gem5-config-script scripts/gem5_cache_sweep.py \
+	--gem5-benchmark /path/to/benchmark_binary \
+	--gem5-workload-name benchmark_run \
+	--cache-size-kb 2048 \
+	--block-sizes-kb 16 32 64 128 256 \
+	--associativities 1 2 4 8 \
+	--output-dir results/full
 ```
 
-### Logging
+Optional arguments:
 
 ```bash
-PYTHONPATH=src python3 main.py --log-level DEBUG --log-file results/run.log
+	--gem5-benchmark-args "arg1 arg2" \
+	--gem5-cpu-type TimingSimpleCPU \
+	--gem5-mem-size 2GB \
+	--gem5-max-ticks 0 \
+	--gem5-stats-hits-key "system.cpu.dcache.overallHits::total" \
+	--gem5-stats-misses-key "system.cpu.dcache.overallMisses::total" \
+	--print-config --print-examples
 ```
 
-## Generated Artifacts
+## Parameter Passing To gem5 Script
 
-In `results/` by default:
+Each run passes these required parameters into `scripts/gem5_cache_sweep.py`:
+
+- `--cache-size-kb`
+- `--block-size-kb`
+- `--assoc`
+- `--workload-name`
+- benchmark command via `--cmd` and `--options`
+
+The gem5 script converts block size KB to bytes for `system.cache_line_size`.
+
+## Outputs
+
+In the chosen output directory:
 
 - `cache_results.csv`
 - `cache_results.json`
@@ -204,26 +121,8 @@ In `results/` by default:
 - `bar_assoc_vs_hit_rate.png`
 - `bar_assoc_vs_miss_rate.png`
 
-## Notes on Miss Classification
+Per-run gem5 artifacts are stored under:
 
-Miss classification is based on deterministic heuristic tracking:
+- `<output_dir>/<gem5_output_subdir>/b<block_kb>KB_a<assoc>/`
 
-- Compulsory misses are exact first-touch misses.
-- Conflict/capacity split is approximated using active working-set pressure.
-
-For production-grade microarchitectural studies, this can be extended using a
-parallel fully-associative shadow cache baseline.
-
-## gem5 Integration Path
-
-This framework is intentionally modular. To integrate with gem5:
-
-1. Replace synthetic workload generation with gem5 trace inputs.
-2. Feed real access traces into `CacheSimulator.run(...)`.
-3. Keep existing reporting and plotting pipeline unchanged.
-
-## Code Size
-
-The implementation is intentionally detailed and modular, with extensive
-comments/docstrings and multiple components to exceed 1000 lines of code while
-remaining readable and maintainable.
+Each run directory contains `stats.txt`, `stdout.log`, `stderr.log`, and `command.txt`.

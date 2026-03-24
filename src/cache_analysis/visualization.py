@@ -100,7 +100,7 @@ class Plotter:
             ax.plot(xs, ys, marker="o", label=f"{assoc}-way")
 
         ax.set_title(title)
-        ax.set_xlabel("Block Size (KB)")
+        ax.set_xlabel("Block Size")
         ax.set_ylabel("Rate")
         ax.grid(True, linestyle="--", alpha=0.4)
         ax.legend()
@@ -123,7 +123,7 @@ class Plotter:
         fig, ax = plt.subplots(figsize=(10, 6))
         for block, points in sorted(series.items()):
             xs, ys = _sorted_points(points)
-            ax.plot(xs, ys, marker="s", label=f"{block} KB block")
+            ax.plot(xs, ys, marker="s", label=f"{_format_bytes(block)} block")
 
         ax.set_title(title)
         ax.set_xlabel("Associativity (ways)")
@@ -160,10 +160,10 @@ class Plotter:
             ax.bar(x + shift, ys, width=width, label=f"{assoc}-way")
 
         ax.set_title(title)
-        ax.set_xlabel("Block Size (KB)")
+        ax.set_xlabel("Block Size")
         ax.set_ylabel("Rate")
         ax.set_xticks(x)
-        ax.set_xticklabels([str(v) for v in x_categories])
+        ax.set_xticklabels([_format_bytes(v) for v in x_categories])
         ax.grid(True, axis="y", linestyle="--", alpha=0.35)
         ax.legend()
 
@@ -193,7 +193,7 @@ class Plotter:
             y_by_x = {xv: yv for xv, yv in points}
             ys = [y_by_x.get(xv, 0.0) for xv in x_categories]
             shift = (idx - (len(block_sizes) - 1) / 2) * width
-            ax.bar(x + shift, ys, width=width, label=f"{block} KB block")
+            ax.bar(x + shift, ys, width=width, label=f"{_format_bytes(block)} block")
 
         ax.set_title(title)
         ax.set_xlabel("Associativity (ways)")
@@ -217,7 +217,7 @@ def _group_by_assoc(
     grouped: Dict[int, List[Tuple[int, float]]] = defaultdict(list)
     for result in results:
         value = result.counters.hit_rate if metric == "hit" else result.counters.miss_rate
-        grouped[result.key.associativity].append((result.key.block_size_kb, value))
+        grouped[result.key.associativity].append((result.key.block_size_bytes, value))
     return grouped
 
 
@@ -228,10 +228,19 @@ def _group_by_block(
     grouped: Dict[int, List[Tuple[int, float]]] = defaultdict(list)
     for result in results:
         value = result.counters.hit_rate if metric == "hit" else result.counters.miss_rate
-        grouped[result.key.block_size_kb].append((result.key.associativity, value))
+        # Group by normalized block size in bytes to keep plotting consistent
+        grouped[result.key.block_size_bytes].append((result.key.associativity, value))
     return grouped
 
 
 def _sorted_points(points: List[Tuple[int, float]]) -> Tuple[List[int], List[float]]:
     points = sorted(points, key=lambda item: item[0])
     return [x for x, _ in points], [y for _, y in points]
+
+
+def _format_bytes(val: int) -> str:
+    if val >= 1024 * 1024:
+        return f"{val // (1024 * 1024)}MB"
+    if val >= 1024:
+        return f"{val // 1024}KB"
+    return f"{val}B"

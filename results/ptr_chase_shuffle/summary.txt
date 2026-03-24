@@ -1,0 +1,27 @@
+Cache Simulation Summary
+================================================================================
+
+Total configurations: 12
+  Successful: 12
+  Failed:     0
+
+Workload: ptr_chase_shuffle
+--------------------------------------------------------------------------------
+Block=64B | Assoc=1-way | Accesses=20785004 | Hits=14330385 | Misses=6454619 | HitRate=0.689458 | MissRate=0.310542
+Block=64B | Assoc=2-way | Accesses=20785004 | Hits=14343727 | Misses=6441277 | HitRate=0.690100 | MissRate=0.309900
+Block=64B | Assoc=4-way | Accesses=20785004 | Hits=14336074 | Misses=6448930 | HitRate=0.689732 | MissRate=0.310268
+Block=64B | Assoc=8-way | Accesses=20785004 | Hits=14335452 | Misses=6449552 | HitRate=0.689702 | MissRate=0.310298
+Block=128B | Assoc=1-way | Accesses=20784986 | Hits=14356847 | Misses=6428139 | HitRate=0.690732 | MissRate=0.309268
+Block=128B | Assoc=2-way | Accesses=20784986 | Hits=14385752 | Misses=6399234 | HitRate=0.692122 | MissRate=0.307878
+Block=128B | Assoc=4-way | Accesses=20784986 | Hits=14381515 | Misses=6403471 | HitRate=0.691918 | MissRate=0.308082
+Block=128B | Assoc=8-way | Accesses=20784986 | Hits=14386545 | Misses=6398441 | HitRate=0.692160 | MissRate=0.307840
+Block=256B | Assoc=1-way | Accesses=20784977 | Hits=14353531 | Misses=6431446 | HitRate=0.690572 | MissRate=0.309428
+Block=256B | Assoc=2-way | Accesses=20784977 | Hits=14411094 | Misses=6373883 | HitRate=0.693342 | MissRate=0.306658
+Block=256B | Assoc=4-way | Accesses=20784977 | Hits=14403576 | Misses=6381401 | HitRate=0.692980 | MissRate=0.307020
+Block=256B | Assoc=8-way | Accesses=20784977 | Hits=14414154 | Misses=6370823 | HitRate=0.693489 | MissRate=0.306511
+
+Key Insight Targets
+--------------------------------------------------------------------------------
+1. Hit rate often increases with block size initially, then may saturate.
+2. Miss rate often decreases initially, but may rise if conflicts dominate.
+3. Associativity tends to show diminishing returns beyond 4-way.
