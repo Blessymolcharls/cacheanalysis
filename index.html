@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cache Performance Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0a0c10;
+    --panel: #0f1218;
+    --panel2: #141820;
+    --border: #1e2430;
+    --accent1: #00e5ff;
+    --accent2: #ff4d6d;
+    --accent3: #b8ff57;
+    --accent4: #ffb300;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --hit: #00e5ff;
+    --miss: #ff4d6d;
+    --w1: #00e5ff;
+    --w2: #b8ff57;
+    --w3: #ff4d6d;
+  }
+ 
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+ 
+  /* Scanline texture */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,229,255,0.015) 2px, rgba(0,229,255,0.015) 4px);
+    pointer-events: none;
+    z-index: 0;
+  }
+ 
+  header {
+    position: relative;
+    padding: 2.5rem 3rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(135deg, #0a0c10 60%, #0d1520);
+  }
+ 
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 3rem; right: 3rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent1), transparent);
+  }
+ 
+  .header-tag {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 0.5rem;
+  }
+ 
+  h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #f1f5f9;
+  }
+ 
+  .header-sub {
+    margin-top: 0.4rem;
+    font-size: 13px;
+    color: var(--muted);
+  }
+ 
+  .workload-pills {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 1.2rem;
+    flex-wrap: wrap;
+  }
+ 
+  .pill {
+    padding: 0.3rem 0.9rem;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid;
+    transition: all 0.2s;
+  }
+  .pill-1 { color: var(--w1); border-color: var(--w1); background: rgba(0,229,255,0.08); }
+  .pill-2 { color: var(--w2); border-color: var(--w2); background: rgba(184,255,87,0.08); }
+  .pill-3 { color: var(--w3); border-color: var(--w3); background: rgba(255,77,109,0.08); }
+  .pill.active, .pill:hover { opacity: 1; filter: brightness(1.3); }
+ 
+  main {
+    position: relative;
+    padding: 2rem 3rem 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    z-index: 1;
+  }
+ 
+  /* ── KPI CARDS ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+ 
+  .kpi {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .kpi:hover { border-color: var(--accent1); }
+ 
+  .kpi::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--kpi-color, var(--accent1));
+  }
+ 
+  .kpi-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+ 
+  .kpi-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--kpi-color, var(--text));
+  }
+ 
+  .kpi-sub {
+    margin-top: 0.4rem;
+    font-size: 11px;
+    color: var(--muted);
+  }
+ 
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+ 
+  /* ── CHART PANELS ── */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+ 
+  .chart-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    position: relative;
+  }
+ 
+  .chart-panel.wide {
+    grid-column: 1 / -1;
+  }
+ 
+  .chart-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+    color: var(--text);
+  }
+ 
+  .chart-desc {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+  }
+ 
+  .chart-wrap {
+    position: relative;
+    height: 280px;
+  }
+ 
+  .chart-wrap.tall {
+    height: 340px;
+  }
+ 
+  /* ── DATA TABLE ── */
+  .table-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+ 
+  .table-header {
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+ 
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+ 
+  thead th {
+    padding: 0.7rem 1rem;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+ 
+  tbody tr {
+    border-bottom: 1px solid rgba(30,36,48,0.6);
+    transition: background 0.15s;
+  }
+  tbody tr:hover { background: rgba(0,229,255,0.04); }
+ 
+  tbody td {
+    padding: 0.65rem 1rem;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+ 
+  .badge {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+ 
+  .badge-w1 { background: rgba(0,229,255,0.15); color: var(--w1); }
+  .badge-w2 { background: rgba(184,255,87,0.15); color: var(--w2); }
+  .badge-w3 { background: rgba(255,77,109,0.15); color: var(--w3); }
+ 
+  .rate-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .rate-bar-bg {
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+    flex: 1;
+    max-width: 80px;
+    overflow: hidden;
+  }
+  .rate-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--hit);
+    transition: width 0.4s;
+  }
+  .rate-bar-fill.miss { background: var(--miss); }
+ 
+  .hit-text { color: var(--hit); }
+  .miss-text { color: var(--miss); }
+ 
+  /* FILTER BAR */
+  .filter-bar {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .filter-label {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  select {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.35rem 0.7rem;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    outline: none;
+  }
+  select:focus { border-color: var(--accent1); }
+ 
+  /* Glow effects */
+  .glow-cyan { text-shadow: 0 0 20px rgba(0,229,255,0.5); }
+ 
+  @media (max-width: 900px) {
+    main { padding: 1.5rem; }
+    header { padding: 1.5rem; }
+    .charts-grid { grid-template-columns: 1fr; }
+    .chart-panel.wide { grid-column: auto; }
+  }
+</style>
+</head>
+<body>
+ 
+<header>
+  <div class="header-tag">⬡ gem5 Simulation · LRU Replacement · 32KB Cache</div>
+  <h1>Cache Performance Dashboard</h1>
+  <div class="header-sub">// block_size ∈ {64B, 128B, 256B} · associativity ∈ {1, 2, 4, 8} · 3 workloads</div>
+  <div class="workload-pills">
+    <span class="pill pill-1">● matrix_mul_blocked</span>
+    <span class="pill pill-2">● ptr_chase_seq</span>
+    <span class="pill pill-3">● ptr_chase_shuffle</span>
+  </div>
+</header>
+ 
+<main>
+ 
+  <!-- KPI CARDS -->
+  <div>
+    <div class="section-title">Overall Statistics</div>
+    <div class="kpi-grid" id="kpiGrid"></div>
+  </div>
+ 
+  <!-- FILTER -->
+  <div class="filter-bar">
+    <span class="filter-label">Filter:</span>
+    <span class="filter-label">Workload</span>
+    <select id="filterWorkload">
+      <option value="all">All Workloads</option>
+      <option value="matrix_mul_blocked">matrix_mul_blocked</option>
+      <option value="ptr_chase_seq">ptr_chase_seq</option>
+      <option value="ptr_chase_shuffle">ptr_chase_shuffle</option>
+    </select>
+    <span class="filter-label">Block Size</span>
+    <select id="filterBlock">
+      <option value="all">All Block Sizes</option>
+      <option value="64">64 B</option>
+      <option value="128">128 B</option>
+      <option value="256">256 B</option>
+    </select>
+  </div>
+ 
+  <!-- CHARTS ROW 1 -->
+  <div class="charts-grid">
+    <div class="chart-panel">
+      <div class="chart-title">Hit Rate % — Block Size Effect</div>
+      <div class="chart-desc">// averaged across all associativities per workload</div>
+      <div class="chart-wrap">
+        <canvas id="chartBlockSize"></canvas>
+      </div>
+    </div>
+ 
+    <div class="chart-panel">
+      <div class="chart-title">Hit Rate % — Associativity Effect</div>
+      <div class="chart-desc">// averaged across all block sizes per workload</div>
+      <div class="chart-wrap">
+        <canvas id="chartAssoc"></canvas>
+      </div>
+    </div>
+ 
+    <div class="chart-panel">
+      <div class="chart-title">Hits vs Misses — Total Counts</div>
+      <div class="chart-desc">// per workload (summed across all configs)</div>
+      <div class="chart-wrap">
+        <canvas id="chartDonut"></canvas>
+      </div>
+    </div>
+ 
+    <div class="chart-panel">
+      <div class="chart-title">Miss Rate % Heatmap View</div>
+      <div class="chart-desc">// miss rate per workload across block sizes</div>
+      <div class="chart-wrap">
+        <canvas id="chartMissLine"></canvas>
+      </div>
+    </div>
+ 
+  </div>
+ 
+  <!-- DATA TABLE -->
+  <div>
+    <div class="section-title">Raw Data</div>
+    <div class="table-panel">
+      <div class="table-header">
+        <div style="font-weight:600;font-size:0.9rem;">All Configurations</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--muted)" id="rowCount"></div>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Workload</th>
+              <th>Block Size</th>
+              <th>Assoc.</th>
+              <th>Hit Rate %</th>
+              <th>Miss Rate %</th>
+              <th>Hits</th>
+              <th>Misses</th>
+              <th>Total Accesses</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+ 
+</main>
+ 
+<script>
+const RAW = [{"workload":"matrix_mul_blocked","cache_size_kb":32,"block_size_bytes":64,"associativity":2,"replacement_policy":"LRU","hit_rate":0.9923097238495828,"miss_rate":0.007690276150417189,"hits":43092696,"misses":333963,"total_accesses":43426659},{"workload":"matrix_mul_blocked","cache_size_kb":32,"block_size_bytes":64,"associativity":1,"replacement_policy":"LRU","hit_rate":0.9776414298875721,"miss_rate":0.022358570112427943,"hits":42455701,"misses":970958,"total_accesses":43426659},{"workload":"matrix_mul_blocked","cache_size_kb":32,"block_size_bytes":64,"associativity":4,"replacement_policy":"LRU","hit_rate":0.9894105599972588,"miss_rate":0.010589440002741174,"hits":42966795,"misses":459864,"total_accesses":43426659},{"workload":"matrix_mul_blocked","cache_size_kb":32,"block_size_bytes":128,"associativity":1,"replacement_policy":"LRU","hit_rate":0.974902923670008,"miss_rate":0.025097076329992005,"hits":42336770,"misses":1089882,"total_accesses":43426652},{"workload":"matrix_mul_blocked","cache_size_kb":32,"block_size_bytes":64,"associativity":8,"replacement_policy":"LRU","hit_rate":0.9856549176394159,"miss_rate":0.014345082360584082,"hits":42803700,"misses":622959,"total_accesses":43426659},{"workload":"matrix_mul_blocked","cache_size_kb":32,"block_size_bytes":128,"associativity":2,"replacement_policy":"LRU","hit_rate":0.9937133306983923,"miss_rate":0.006286669301607686,"hits":43153643,"misses":273009,"total_accesses":43426652},{"workload":"matrix_mul_blocked","cache_size_kb":32,"block_size_bytes":128,"associativity":4,"replacement_policy":"LRU","hit_rate":0.9919217120398782,"miss_rate":0.008078287960121817,"hits":43075839,"misses":350813,"total_accesses":43426652},{"workload":"matrix_mul_blocked","cache_size_kb":32,"block_size_bytes":128,"associativity":8,"replacement_policy":"LRU","hit_rate":0.9889378762148185,"miss_rate":0.011062123785181505,"hits":42946261,"misses":480391,"total_accesses":43426652},{"workload":"matrix_mul_blocked","cache_size_kb":32,"block_size_bytes":256,"associativity":1,"replacement_policy":"LRU","hit_rate":0.9685153478678336,"miss_rate":0.03148465213216649,"hits":42059378,"misses":1367273,"total_accesses":43426651},{"workload":"matrix_mul_blocked","cache_size_kb":32,"block_size_bytes":256,"associativity":2,"replacement_policy":"LRU","hit_rate":0.9946968279916404,"miss_rate":0.005303172008359567,"hits":43196352,"misses":230299,"total_accesses":43426651},{"workload":"matrix_mul_blocked","cache_size_kb":32,"block_size_bytes":256,"associativity":4,"replacement_policy":"LRU","hit_rate":0.9944722424024823,"miss_rate":0.005527757597517708,"hits":43186599,"misses":240052,"total_accesses":43426651},{"workload":"matrix_mul_blocked","cache_size_kb":32,"block_size_bytes":256,"associativity":8,"replacement_policy":"LRU","hit_rate":0.9923207525259086,"miss_rate":0.007679247474091429,"hits":43093167,"misses":333484,"total_accesses":43426651},{"workload":"ptr_chase_seq","cache_size_kb":32,"block_size_bytes":64,"associativity":1,"replacement_policy":"LRU","hit_rate":0.9764252115351814,"miss_rate":0.023574788464818672,"hits":19938264,"misses":481389,"total_accesses":20419653},{"workload":"ptr_chase_seq","cache_size_kb":32,"block_size_bytes":64,"associativity":2,"replacement_policy":"LRU","hit_rate":0.9776503547832082,"miss_rate":0.02234964521679188,"hits":19963281,"misses":456372,"total_accesses":20419653},{"workload":"ptr_chase_seq","cache_size_kb":32,"block_size_bytes":64,"associativity":4,"replacement_policy":"LRU","hit_rate":0.9776535869635004,"miss_rate":0.02234641303649969,"hits":19963347,"misses":456306,"total_accesses":20419653},{"workload":"ptr_chase_seq","cache_size_kb":32,"block_size_bytes":128,"associativity":1,"replacement_policy":"LRU","hit_rate":0.9863174448965851,"miss_rate":0.013682555103414843,"hits":20140258,"misses":279393,"total_accesses":20419651},{"workload":"ptr_chase_seq","cache_size_kb":32,"block_size_bytes":64,"associativity":8,"replacement_policy":"LRU","hit_rate":0.977654517439645,"miss_rate":0.022345482560354967,"hits":19963366,"misses":456287,"total_accesses":20419653},{"workload":"ptr_chase_seq","cache_size_kb":32,"block_size_bytes":128,"associativity":2,"replacement_policy":"LRU","hit_rate":0.9888055383512676,"miss_rate":0.01119446164873239,"hits":20191064,"misses":228587,"total_accesses":20419651},{"workload":"ptr_chase_seq","cache_size_kb":32,"block_size_bytes":128,"associativity":4,"replacement_policy":"LRU","hit_rate":0.9888092112837775,"miss_rate":0.011190788716222427,"hits":20191139,"misses":228512,"total_accesses":20419651},{"workload":"ptr_chase_seq","cache_size_kb":32,"block_size_bytes":256,"associativity":1,"replacement_policy":"LRU","hit_rate":0.9893815015812222,"miss_rate":0.010618498418777836,"hits":20202822,"misses":216826,"total_accesses":20419648},{"workload":"ptr_chase_seq","cache_size_kb":32,"block_size_bytes":128,"associativity":8,"replacement_policy":"LRU","hit_rate":0.9888113660708501,"miss_rate":0.011188633929149915,"hits":20191183,"misses":228468,"total_accesses":20419651},{"workload":"ptr_chase_seq","cache_size_kb":32,"block_size_bytes":256,"associativity":2,"replacement_policy":"LRU","hit_rate":0.9943812939380737,"miss_rate":0.005618706061926239,"hits":20304916,"misses":114732,"total_accesses":20419648},{"workload":"ptr_chase_seq","cache_size_kb":32,"block_size_bytes":256,"associativity":4,"replacement_policy":"LRU","hit_rate":0.994388199052207,"miss_rate":0.005611800947793027,"hits":20305057,"misses":114591,"total_accesses":20419648},{"workload":"ptr_chase_seq","cache_size_kb":32,"block_size_bytes":256,"associativity":8,"replacement_policy":"LRU","hit_rate":0.9943897171978675,"miss_rate":0.005610282802132534,"hits":20305088,"misses":114560,"total_accesses":20419648},{"workload":"ptr_chase_shuffle","cache_size_kb":32,"block_size_bytes":64,"associativity":2,"replacement_policy":"LRU","hit_rate":0.69149688960244,"miss_rate":0.30850311039755995,"hits":14437321,"misses":6441039,"total_accesses":20878360},{"workload":"ptr_chase_shuffle","cache_size_kb":32,"block_size_bytes":64,"associativity":1,"replacement_policy":"LRU","hit_rate":0.6908912864803557,"miss_rate":0.30910871351964425,"hits":14424677,"misses":6453683,"total_accesses":20878360},{"workload":"ptr_chase_shuffle","cache_size_kb":32,"block_size_bytes":64,"associativity":4,"replacement_policy":"LRU","hit_rate":0.6911059106175006,"miss_rate":0.3088940893824994,"hits":14429158,"misses":6449202,"total_accesses":20878360},{"workload":"ptr_chase_shuffle","cache_size_kb":32,"block_size_bytes":64,"associativity":8,"replacement_policy":"LRU","hit_rate":0.6910810044467094,"miss_rate":0.3089189955532906,"hits":14428638,"misses":6449722,"total_accesses":20878360},{"workload":"ptr_chase_shuffle","cache_size_kb":32,"block_size_bytes":128,"associativity":1,"replacement_policy":"LRU","hit_rate":0.6920781318147721,"miss_rate":0.307921868185228,"hits":14449455,"misses":6428903,"total_accesses":20878358},{"workload":"ptr_chase_shuffle","cache_size_kb":32,"block_size_bytes":128,"associativity":4,"replacement_policy":"LRU","hit_rate":0.6933020307439886,"miss_rate":0.3066979692560114,"hits":14475008,"misses":6403350,"total_accesses":20878358},{"workload":"ptr_chase_shuffle","cache_size_kb":32,"block_size_bytes":128,"associativity":2,"replacement_policy":"LRU","hit_rate":0.6934528567811702,"miss_rate":0.30654714321882975,"hits":14478157,"misses":6400201,"total_accesses":20878358},{"workload":"ptr_chase_shuffle","cache_size_kb":32,"block_size_bytes":256,"associativity":1,"replacement_policy":"LRU","hit_rate":0.6919526945489719,"miss_rate":0.3080473054510281,"hits":14446834,"misses":6431521,"total_accesses":20878355},{"workload":"ptr_chase_shuffle","cache_size_kb":32,"block_size_bytes":128,"associativity":8,"replacement_policy":"LRU","hit_rate":0.6934712490321318,"miss_rate":0.30652875096786825,"hits":14478541,"misses":6399817,"total_accesses":20878358},{"workload":"ptr_chase_shuffle","cache_size_kb":32,"block_size_bytes":256,"associativity":2,"replacement_policy":"LRU","hit_rate":0.6947094730403808,"miss_rate":0.30529052695961917,"hits":14504391,"misses":6373964,"total_accesses":20878355},{"workload":"ptr_chase_shuffle","cache_size_kb":32,"block_size_bytes":256,"associativity":4,"replacement_policy":"LRU","hit_rate":0.6942340524433079,"miss_rate":0.30576594755669206,"hits":14494465,"misses":6383890,"total_accesses":20878355},{"workload":"ptr_chase_shuffle","cache_size_kb":32,"block_size_bytes":256,"associativity":8,"replacement_policy":"LRU","hit_rate":0.6947983210363077,"miss_rate":0.3052016789636923,"hits":14506246,"misses":6372109,"total_accesses":20878355}];
+ 
+const WORKLOADS = ['matrix_mul_blocked','ptr_chase_seq','ptr_chase_shuffle'];
+const W_COLORS = {'matrix_mul_blocked':'#00e5ff','ptr_chase_seq':'#b8ff57','ptr_chase_shuffle':'#ff4d6d'};
+const W_LABELS = {'matrix_mul_blocked':'Matrix Mul Blocked','ptr_chase_seq':'Ptr Chase Seq','ptr_chase_shuffle':'Ptr Chase Shuffle'};
+const W_BADGE = {'matrix_mul_blocked':'badge-w1','ptr_chase_seq':'badge-w2','ptr_chase_shuffle':'badge-w3'};
+ 
+const BLOCK_SIZES = [64,128,256];
+const ASSOCS = [1,2,4,8];
+ 
+Chart.defaults.color = '#64748b';
+Chart.defaults.borderColor = '#1e2430';
+Chart.defaults.font.family = "'JetBrains Mono', monospace";
+Chart.defaults.font.size = 11;
+ 
+const pct = v => (v * 100).toFixed(2) + '%';
+const fmt = n => n >= 1e6 ? (n/1e6).toFixed(2)+'M' : n >= 1e3 ? (n/1e3).toFixed(1)+'K' : n;
+ 
+function avg(arr) { return arr.reduce((a,b)=>a+b,0)/arr.length; }
+ 
+// ── KPI CARDS
+function buildKPIs(data) {
+  const totalHits = data.reduce((s,r)=>s+r.hits,0);
+  const totalMisses = data.reduce((s,r)=>s+r.misses,0);
+  const totalAccesses = data.reduce((s,r)=>s+r.total_accesses,0);
+  const avgHit = avg(data.map(r=>r.hit_rate));
+  const avgMiss = avg(data.map(r=>r.miss_rate));
+  const bestRow = data.reduce((a,b)=>b.hit_rate>a.hit_rate?b:a,data[0]);
+  const worstRow = data.reduce((a,b)=>b.miss_rate>a.miss_rate?b:a,data[0]);
+ 
+  const kpis = [
+    { label:'Avg Hit Rate', value: (avgHit*100).toFixed(2)+'%', sub:'across all configs', color:'var(--hit)' },
+    { label:'Avg Miss Rate', value: (avgMiss*100).toFixed(2)+'%', sub:'across all configs', color:'var(--miss)' },
+    { label:'Total Hits', value: fmt(totalHits), sub:'cumulative', color:'var(--accent1)' },
+    { label:'Total Misses', value: fmt(totalMisses), sub:'cumulative', color:'var(--accent2)' },
+    { label:'Total Accesses', value: fmt(totalAccesses), sub:'cumulative', color:'var(--accent4)' },
+    { label:'Best Config Hit', value: (bestRow.hit_rate*100).toFixed(2)+'%', sub:`B${bestRow.block_size_bytes} A${bestRow.associativity} · ${W_LABELS[bestRow.workload].split(' ')[0]}`, color:'var(--accent3)' },
+    { label:'Worst Config Miss', value: (worstRow.miss_rate*100).toFixed(2)+'%', sub:`B${worstRow.block_size_bytes} A${worstRow.associativity} · ${W_LABELS[worstRow.workload].split(' ')[0]}`, color:'var(--accent2)' },
+    { label:'Configs Analyzed', value: data.length, sub:'total runs', color:'var(--muted)' },
+  ];
+ 
+  const grid = document.getElementById('kpiGrid');
+  grid.innerHTML = kpis.map(k=>`
+    <div class="kpi" style="--kpi-color:${k.color}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.value}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>
+  `).join('');
+}
+ 
+// ── CHART 2: Block Size Effect
+let chart2, chart3, chart4, chart5;
+function buildChart2(data) {
+  const ctx = document.getElementById('chartBlockSize').getContext('2d');
+  if(chart2) chart2.destroy();
+  const datasets = WORKLOADS.map(w => {
+    const pts = BLOCK_SIZES.map(bs => {
+      const rows = data.filter(r=>r.workload===w && r.block_size_bytes===bs);
+      return rows.length ? +(avg(rows.map(r=>r.hit_rate))*100).toFixed(3) : null;
+    });
+    return { label: W_LABELS[w], data: pts, borderColor: W_COLORS[w], backgroundColor: W_COLORS[w]+'33', fill:true, tension:0.4, pointRadius:6, pointHoverRadius:9, borderWidth:2 };
+  });
+  chart2 = new Chart(ctx, {
+    type:'line',
+    data: { labels: BLOCK_SIZES.map(b=>b+'B'), datasets },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ labels:{ color:'#94a3b8', boxWidth:12 } } },
+      scales:{ y:{ ticks:{ callback:v=>v+'%' } } }
+    }
+  });
+}
+ 
+// ── CHART 3: Associativity Effect
+function buildChart3(data) {
+  const ctx = document.getElementById('chartAssoc').getContext('2d');
+  if(chart3) chart3.destroy();
+  const datasets = WORKLOADS.map(w => {
+    const pts = ASSOCS.map(a => {
+      const rows = data.filter(r=>r.workload===w && r.associativity===a);
+      return rows.length ? +(avg(rows.map(r=>r.hit_rate))*100).toFixed(3) : null;
+    });
+    return { label: W_LABELS[w], data: pts, borderColor: W_COLORS[w], backgroundColor: W_COLORS[w]+'22', fill:true, tension:0.4, pointRadius:6, pointHoverRadius:9, borderWidth:2 };
+  });
+  chart3 = new Chart(ctx, {
+    type:'line',
+    data: { labels: ASSOCS.map(a=>a+'-way'), datasets },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ labels:{ color:'#94a3b8', boxWidth:12 } } },
+      scales:{ y:{ ticks:{ callback:v=>v+'%' } } }
+    }
+  });
+}
+ 
+// ── CHART 4: Donut
+function buildChart4(data) {
+  const ctx = document.getElementById('chartDonut').getContext('2d');
+  if(chart4) chart4.destroy();
+  const hitsByW = WORKLOADS.map(w=>data.filter(r=>r.workload===w).reduce((s,r)=>s+r.hits,0));
+  const missesByW = WORKLOADS.map(w=>data.filter(r=>r.workload===w).reduce((s,r)=>s+r.misses,0));
+  const labels = [...WORKLOADS.map(w=>W_LABELS[w]+' Hits'), ...WORKLOADS.map(w=>W_LABELS[w]+' Misses')];
+  const vals = [...hitsByW, ...missesByW];
+  const colors = [...WORKLOADS.map(w=>W_COLORS[w]+'dd'), ...WORKLOADS.map(w=>W_COLORS[w]+'44')];
+  chart4 = new Chart(ctx, {
+    type:'doughnut',
+    data: { labels, datasets:[{ data:vals, backgroundColor:colors, borderWidth:0, hoverOffset:8 }] },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{ position:'right', labels:{ color:'#94a3b8', boxWidth:10, font:{size:10}, padding:8 } },
+        tooltip:{ callbacks:{ label:(item)=>` ${item.label}: ${fmt(item.raw)}` } }
+      }
+    }
+  });
+}
+ 
+// ── CHART 5: Miss Rate Line
+function buildChart5(data) {
+  const ctx = document.getElementById('chartMissLine').getContext('2d');
+  if(chart5) chart5.destroy();
+  const datasets = WORKLOADS.map(w => {
+    const pts = BLOCK_SIZES.map(bs => {
+      const rows = data.filter(r=>r.workload===w && r.block_size_bytes===bs);
+      return rows.length ? +(avg(rows.map(r=>r.miss_rate))*100).toFixed(3) : null;
+    });
+    return { label:W_LABELS[w], data:pts, borderColor:W_COLORS[w], backgroundColor:W_COLORS[w]+'22', fill:true, tension:0.4, pointRadius:6, borderWidth:2, pointStyle:'rectRot', pointRadius:8 };
+  });
+  chart5 = new Chart(ctx, {
+    type:'line',
+    data:{ labels:BLOCK_SIZES.map(b=>b+'B'), datasets },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ labels:{ color:'#94a3b8', boxWidth:12 } } },
+      scales:{ y:{ ticks:{ callback:v=>v+'%' }, title:{ display:true, text:'Miss Rate %', color:'#64748b' } } }
+    }
+  });
+}
+ 
+// ── TABLE
+function buildTable(data) {
+  const sorted = [...data].sort((a,b)=>{
+    const wi = WORKLOADS.indexOf(a.workload) - WORKLOADS.indexOf(b.workload);
+    if(wi!==0) return wi;
+    if(a.block_size_bytes!==b.block_size_bytes) return a.block_size_bytes-b.block_size_bytes;
+    return a.associativity-b.associativity;
+  });
+  document.getElementById('rowCount').textContent = sorted.length + ' rows';
+  document.getElementById('tableBody').innerHTML = sorted.map(r => {
+    const hitPct = (r.hit_rate*100).toFixed(2);
+    const missPct = (r.miss_rate*100).toFixed(2);
+    return `<tr>
+      <td><span class="badge ${W_BADGE[r.workload]}">${r.workload.replace('_',' ').replace('_',' ')}</span></td>
+      <td>${r.block_size_bytes}B</td>
+      <td>${r.associativity}-way</td>
+      <td>
+        <div class="rate-bar">
+          <span class="hit-text" style="min-width:52px">${hitPct}%</span>
+          <div class="rate-bar-bg"><div class="rate-bar-fill" style="width:${hitPct}%"></div></div>
+        </div>
+      </td>
+      <td>
+        <div class="rate-bar">
+          <span class="miss-text" style="min-width:52px">${missPct}%</span>
+          <div class="rate-bar-bg"><div class="rate-bar-fill miss" style="width:${Math.min(missPct*3,100)}%"></div></div>
+        </div>
+      </td>
+      <td style="color:#94a3b8">${fmt(r.hits)}</td>
+      <td style="color:var(--miss)">${fmt(r.misses)}</td>
+      <td style="color:#64748b">${fmt(r.total_accesses)}</td>
+    </tr>`;
+  }).join('');
+}
+ 
+function getFiltered() {
+  const wf = document.getElementById('filterWorkload').value;
+  const bf = document.getElementById('filterBlock').value;
+  return RAW.filter(r =>
+    (wf==='all' || r.workload===wf) &&
+    (bf==='all' || r.block_size_bytes===+bf)
+  );
+}
+ 
+function renderAll() {
+  const data = getFiltered();
+  buildKPIs(data);
+  buildChart2(data);
+  buildChart3(data);
+  buildChart4(data);
+  buildChart5(data);
+  buildTable(data);
+}
+ 
+document.getElementById('filterWorkload').addEventListener('change', renderAll);
+document.getElementById('filterBlock').addEventListener('change', renderAll);
+ 
+renderAll();
+</script>
+</body>
+</html>
+ 
