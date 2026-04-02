@@ -3,11 +3,4 @@ warn: Base 10 memory/cache size 32kB will be cast to base 2 size 32KiB.
 warn: No dot file generated. Please install pydot to generate the dot file and pdf.
 src/mem/dram_interface.cc:690: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (2048 Mbytes)
 src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
-system.remote_gdb: Listening for connections on port 7001
-src/sim/mem_state.cc:443: info: Increasing stack size by one page.
-src/sim/syscall_emul.cc:86: warn: ignoring syscall set_robust_list(...)
-src/sim/syscall_emul.cc:86: warn: ignoring syscall rseq(...)
-src/sim/syscall_emul.cc:86: warn: ignoring syscall mprotect(...)
-src/sim/syscall_emul.cc:86: warn: ignoring syscall mprotect(...)
-src/sim/syscall_emul.cc:86: warn: ignoring syscall mprotect(...)
-src/sim/syscall_emul.cc:86: warn: ignoring syscall mprotect(...)
+system.remote_gdb: Listening for connections on port 7000

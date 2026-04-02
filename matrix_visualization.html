@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Matrix Access Visualization</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background: #f5f5f5;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.main-container {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  flex-wrap: wrap;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.matrix {
+  display: grid;
+  grid-template-columns: repeat(4, 50px);
+  grid-template-rows: repeat(4, 50px);
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.mem-cell {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  background: #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.active {
+  background: #007aff;
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.title {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 5px;
+  color: #333;
+}
+</style>
+
+</head>
+<body>
+
+<h1>Matrix Access Visualization</h1>
+
+<div class="main-container">
+  <div class="section">
+    <div class="title">Row-Major Access</div>
+    <div style="font-size:14px;color:#666;">(e.g., Matrix A: A[i][k])</div>
+    <div id="row-major" class="matrix"></div>
+  </div>
+
+  <div class="section">
+    <div class="title">Column-Major Access</div>
+    <div style="font-size:14px;color:#666;">(e.g., Matrix B: B[k][j])</div>
+    <div id="col-major" class="matrix"></div>
+  </div>
+
+  <div class="section">
+    <div class="title">Tiled / Blocked Access</div>
+    <div style="font-size:14px;color:#666;">(Optimized for Cache Line)</div>
+    <div id="block-access" class="matrix"></div>
+  </div>
+</div>
+
+<script>
+const size = 4; // 4x4 matrix
+
+function createMatrix(containerId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = "";
+
+  for (let r = 0; r < size; r++) {
+    for (let c = 0; c < size; c++) {
+      const cell = document.createElement("div");
+      cell.className = "mem-cell";
+      cell.innerText = `${r},${c}`;
+      container.appendChild(cell);
+    }
+  }
+}
+
+// Row-Major Access
+function rowMajor() {
+  createMatrix("row-major");
+  let i = 0;
+  setInterval(() => {
+    const cells = document.querySelectorAll("#row-major .mem-cell");
+    cells.forEach(c => c.classList.remove("active"));
+    
+    cells[i].classList.add("active");
+    i = (i + 1) % (size * size);
+  }, 400);
+}
+
+// Column-Major Access
+function colMajor() {
+  createMatrix("col-major");
+  let i = 0;
+  setInterval(() => {
+    const cells = document.querySelectorAll("#col-major .mem-cell");
+    cells.forEach(c => c.classList.remove("active"));
+    
+    // Convert linear index to col-major index
+    const r = i % size;
+    const c = Math.floor(i / size);
+    const index = r * size + c;
+
+    cells[index].classList.add("active");
+    i = (i + 1) % (size * size);
+  }, 400);
+}
+
+// Block/Tiled Access (2x2 blocks)
+function blockAccess() {
+  createMatrix("block-access");
+  let i = 0;
+  const blockSize = 2;
+  
+  // Create an array of indices for 2x2 blocks in a 4x4 matrix
+  const order = [];
+  for (let br = 0; br < size; br += blockSize) {
+    for (let bc = 0; bc < size; bc += blockSize) {
+      // Traverse inside the block
+      for (let r = 0; r < blockSize; r++) {
+        for (let c = 0; c < blockSize; c++) {
+           order.push((br + r) * size + (bc + c));
+        }
+      }
+    }
+  }
+
+  setInterval(() => {
+    const cells = document.querySelectorAll("#block-access .mem-cell");
+    cells.forEach(c => c.classList.remove("active"));
+    
+    cells[order[i]].classList.add("active");
+    i = (i + 1) % (size * size);
+  }, 400);
+}
+
+// Run all
+rowMajor();
+colMajor();
+blockAccess();
+</script>
+
+</body>
+</html>

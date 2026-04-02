@@ -4,14 +4,14 @@ gem5 is copyrighted software; use the --copyright option for details.
 
 gem5 version 25.1.0.0
 gem5 compiled Mar 11 2026 08:12:36
-gem5 started Mar 25 2026 04:50:34
-gem5 executing on BlessyMol, pid 18855
-command line: ../gem5/build/X86/gem5.opt --outdir=results/ptr_chase_seq/gem5_runs_ptr_chase_seq/b64B_a8 scripts/gem5_cache_sweep.py --cmd=benchmarks/bin/ptr_chase_seq --workload-name=ptr_chase_seq --cpu-type=TimingSimpleCPU --mem-size=2GB --cache-size-kb=32 --block-size-bytes=64 --assoc=8
+gem5 started Mar 26 2026 03:53:38
+gem5 executing on BlessyMol, pid 5232
+command line: ../gem5/build/X86/gem5.opt --outdir=results/ptr_chase_seq/gem5_runs_ptr_chase_seq/b64B_a8 scripts/gem5_cache_sweep.py --cmd=benchmarks/bin/ptr_chase_seq --workload-name=ptr_chase_seq --cpu-type=AtomicSimpleCPU --mem-size=2GB --cache-size-kb=32 --block-size-bytes=64 --assoc=8
 
 [gem5-config] CONFIG ARGS:
 [gem5-config] cmd=benchmarks/bin/ptr_chase_seq
 [gem5-config] workload_name=ptr_chase_seq
-[gem5-config] cpu_type=TimingSimpleCPU
+[gem5-config] cpu_type=AtomicSimpleCPU
 [gem5-config] cache_size_kb=32
 [gem5-config] block_size_bytes=64
 [gem5-config] assoc_arg=8
@@ -19,4 +19,4 @@ command line: ../gem5/build/X86/gem5.opt --outdir=results/ptr_chase_seq/gem5_run
 [gem5-config] Associativity (instance): 8
 [gem5-config] Block Size (bytes/system): 64
 RESULT: pointer_chase mode=sequential
-Exiting @ tick 2636757785000 because exiting with last active thread context
+Exiting @ tick 78143934000 because exiting with last active thread context

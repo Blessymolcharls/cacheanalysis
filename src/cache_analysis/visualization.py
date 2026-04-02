@@ -95,15 +95,20 @@ class Plotter:
         series = _group_by_assoc(results, metric)
 
         fig, ax = plt.subplots(figsize=(10, 6))
+        # Consistent colors for associativity
+        colors = {1: "tab:blue", 2: "tab:orange", 4: "tab:green", 8: "tab:red"}
+        
         for assoc, points in sorted(series.items()):
             xs, ys = _sorted_points(points)
-            ax.plot(xs, ys, marker="o", label=f"{assoc}-way")
+            c = colors.get(assoc, "tab:gray")
+            ax.plot(xs, ys, marker="o", color=c, label=f"{assoc}-way")
 
         ax.set_title(title)
-        ax.set_xlabel("Block Size")
-        ax.set_ylabel("Rate")
+        ax.set_xlabel("Block Size (Bytes)")
+        ax.set_ylabel("Rate (0.0 - 1.0)")
+        ax.set_ylim(0.0, 1.0)
         ax.grid(True, linestyle="--", alpha=0.4)
-        ax.legend()
+        ax.legend(title="Associativity")
 
         path = os.path.join(self.output_dir, output_name)
         fig.tight_layout()
@@ -121,15 +126,21 @@ class Plotter:
         series = _group_by_block(results, metric)
 
         fig, ax = plt.subplots(figsize=(10, 6))
+        # Consistent colors for block sizes
+        colors = {64: "tab:purple", 128: "tab:brown", 256: "tab:cyan"}
+
         for block, points in sorted(series.items()):
             xs, ys = _sorted_points(points)
-            ax.plot(xs, ys, marker="s", label=f"{_format_bytes(block)} block")
+            c = colors.get(block, "tab:gray")
+            ax.plot(xs, ys, marker="s", color=c, label=f"{_format_bytes(block)} block")
 
         ax.set_title(title)
-        ax.set_xlabel("Associativity (ways)")
-        ax.set_ylabel("Rate")
+        ax.set_xlabel("Associativity (Ways)")
+        ax.set_ylabel("Rate (0.0 - 1.0)")
+        ax.set_ylim(0.0, 1.0)
+        ax.set_xticks([1, 2, 4, 8])
         ax.grid(True, linestyle=":", alpha=0.5)
-        ax.legend()
+        ax.legend(title="Block Size")
 
         path = os.path.join(self.output_dir, output_name)
         fig.tight_layout()
@@ -152,20 +163,24 @@ class Plotter:
         width = 0.18
 
         fig, ax = plt.subplots(figsize=(12, 6))
+        colors = {1: "tab:blue", 2: "tab:orange", 4: "tab:green", 8: "tab:red"}
+
         for idx, assoc in enumerate(assoc_values):
             points = sorted(series[assoc], key=lambda item: item[0])
             y_by_x = {xv: yv for xv, yv in points}
             ys = [y_by_x.get(xv, 0.0) for xv in x_categories]
             shift = (idx - (len(assoc_values) - 1) / 2) * width
-            ax.bar(x + shift, ys, width=width, label=f"{assoc}-way")
+            c = colors.get(assoc, "tab:gray")
+            ax.bar(x + shift, ys, width=width, color=c, label=f"{assoc}-way")
 
         ax.set_title(title)
-        ax.set_xlabel("Block Size")
-        ax.set_ylabel("Rate")
+        ax.set_xlabel("Block Size (Bytes)")
+        ax.set_ylabel("Rate (0.0 - 1.0)")
+        ax.set_ylim(0.0, 1.0)
         ax.set_xticks(x)
         ax.set_xticklabels([_format_bytes(v) for v in x_categories])
         ax.grid(True, axis="y", linestyle="--", alpha=0.35)
-        ax.legend()
+        ax.legend(title="Associativity")
 
         path = os.path.join(self.output_dir, output_name)
         fig.tight_layout()
@@ -188,20 +203,24 @@ class Plotter:
         width = 0.16
 
         fig, ax = plt.subplots(figsize=(12, 6))
+        colors = {64: "tab:purple", 128: "tab:brown", 256: "tab:cyan"}
+
         for idx, block in enumerate(block_sizes):
             points = sorted(series[block], key=lambda item: item[0])
             y_by_x = {xv: yv for xv, yv in points}
             ys = [y_by_x.get(xv, 0.0) for xv in x_categories]
             shift = (idx - (len(block_sizes) - 1) / 2) * width
-            ax.bar(x + shift, ys, width=width, label=f"{_format_bytes(block)} block")
+            c = colors.get(block, "tab:gray")
+            ax.bar(x + shift, ys, width=width, color=c, label=f"{_format_bytes(block)} block")
 
         ax.set_title(title)
-        ax.set_xlabel("Associativity (ways)")
-        ax.set_ylabel("Rate")
+        ax.set_xlabel("Associativity (Ways)")
+        ax.set_ylabel("Rate (0.0 - 1.0)")
+        ax.set_ylim(0.0, 1.0)
         ax.set_xticks(x)
         ax.set_xticklabels([str(v) for v in x_categories])
         ax.grid(True, axis="y", linestyle=":", alpha=0.45)
-        ax.legend()
+        ax.legend(title="Block Size")
 
         path = os.path.join(self.output_dir, output_name)
         fig.tight_layout()

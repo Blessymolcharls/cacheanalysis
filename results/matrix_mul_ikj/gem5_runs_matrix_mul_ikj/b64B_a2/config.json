@@ -21,7 +21,7 @@
         "external_memory_ranges": [],
         "init_param": 0,
         "m5ops_base": 0,
-        "mem_mode": "timing",
+        "mem_mode": "atomic",
         "mem_ranges": [
             "0:2147483648"
         ],
@@ -77,8 +77,8 @@
             }
         },
         "cpu": {
-            "type": "BaseTimingSimpleCPU",
-            "cxx_class": "gem5::TimingSimpleCPU",
+            "type": "BaseAtomicSimpleCPU",
+            "cxx_class": "gem5::AtomicSimpleCPU",
             "name": "cpu",
             "path": "system.cpu",
             "branchPred": null,
@@ -307,6 +307,8 @@
             "progress_interval": 0,
             "pwr_gating_latency": 300,
             "simpoint_start_insts": [],
+            "simulate_data_stalls": false,
+            "simulate_inst_stalls": false,
             "socket_id": 0,
             "switched_out": false,
             "syscallRetryLatency": 10000,
@@ -325,6 +327,7 @@
                 },
                 "eventq_index": 0
             },
+            "width": 1,
             "workload": [
                 {
                     "type": "Process",

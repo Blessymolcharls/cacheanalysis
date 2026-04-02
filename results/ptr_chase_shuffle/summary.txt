@@ -13,12 +13,12 @@ Block=64B | Assoc=4-way | Accesses=20878360 | Hits=14429158 | Misses=6449202 | H
 Block=64B | Assoc=8-way | Accesses=20878360 | Hits=14428638 | Misses=6449722 | HitRate=0.691081 | MissRate=0.308919
 Block=128B | Assoc=1-way | Accesses=20878358 | Hits=14449455 | Misses=6428903 | HitRate=0.692078 | MissRate=0.307922
 Block=128B | Assoc=2-way | Accesses=20878358 | Hits=14478157 | Misses=6400201 | HitRate=0.693453 | MissRate=0.306547
-Block=128B | Assoc=4-way | Accesses=20878358 | Hits=14475008 | Misses=6403350 | HitRate=0.693302 | MissRate=0.306698
-Block=128B | Assoc=8-way | Accesses=20878358 | Hits=14478541 | Misses=6399817 | HitRate=0.693471 | MissRate=0.306529
-Block=256B | Assoc=1-way | Accesses=20878355 | Hits=14446834 | Misses=6431521 | HitRate=0.691953 | MissRate=0.308047
-Block=256B | Assoc=2-way | Accesses=20878355 | Hits=14504391 | Misses=6373964 | HitRate=0.694709 | MissRate=0.305291
-Block=256B | Assoc=4-way | Accesses=20878355 | Hits=14494465 | Misses=6383890 | HitRate=0.694234 | MissRate=0.305766
-Block=256B | Assoc=8-way | Accesses=20878355 | Hits=14506246 | Misses=6372109 | HitRate=0.694798 | MissRate=0.305202
+Block=128B | Assoc=4-way | Accesses=1211326 | Hits=537169 | Misses=674157 | HitRate=0.443455 | MissRate=0.556545
+Block=128B | Assoc=8-way | Accesses=1018721 | Hits=513236 | Misses=505485 | HitRate=0.503804 | MissRate=0.496196
+Block=256B | Assoc=1-way | Accesses=201295 | Hits=176791 | Misses=24504 | HitRate=0.878268 | MissRate=0.121732
+Block=256B | Assoc=2-way | Accesses=201659 | Hits=178141 | Misses=23518 | HitRate=0.883377 | MissRate=0.116623
+Block=256B | Assoc=4-way | Accesses=158203 | Hits=143952 | Misses=14251 | HitRate=0.909920 | MissRate=0.090080
+Block=256B | Assoc=8-way | Accesses=158943 | Hits=144560 | Misses=14383 | HitRate=0.909508 | MissRate=0.090492
 
 Key Insight Targets
 --------------------------------------------------------------------------------

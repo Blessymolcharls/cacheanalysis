@@ -4,14 +4,14 @@ gem5 is copyrighted software; use the --copyright option for details.
 
 gem5 version 25.1.0.0
 gem5 compiled Mar 11 2026 08:12:36
-gem5 started Mar 25 2026 10:46:33
-gem5 executing on BlessyMol, pid 26876
-command line: ../gem5/build/X86/gem5.opt --outdir=results/matrix_mul_blocked/gem5_runs_matrix_mul_blocked/b256B_a8 scripts/gem5_cache_sweep.py --cmd=benchmarks/bin/matrix_mul --workload-name=matrix_mul_blocked --cpu-type=TimingSimpleCPU --mem-size=2GB --cache-size-kb=32 --block-size-bytes=256 --assoc=8 '--options=128 blocked'
+gem5 started Mar 26 2026 03:51:24
+gem5 executing on BlessyMol, pid 5216
+command line: ../gem5/build/X86/gem5.opt --outdir=results/matrix_mul_blocked/gem5_runs_matrix_mul_blocked/b256B_a8 scripts/gem5_cache_sweep.py --cmd=benchmarks/bin/matrix_mul --workload-name=matrix_mul_blocked --cpu-type=AtomicSimpleCPU --mem-size=2GB --cache-size-kb=32 --block-size-bytes=256 --assoc=8 '--options=128 blocked'
 
 [gem5-config] CONFIG ARGS:
 [gem5-config] cmd=benchmarks/bin/matrix_mul
 [gem5-config] workload_name=matrix_mul_blocked
-[gem5-config] cpu_type=TimingSimpleCPU
+[gem5-config] cpu_type=AtomicSimpleCPU
 [gem5-config] cache_size_kb=32
 [gem5-config] block_size_bytes=256
 [gem5-config] assoc_arg=8
@@ -19,4 +19,4 @@ command line: ../gem5/build/X86/gem5.opt --outdir=results/matrix_mul_blocked/gem
 [gem5-config] Associativity (instance): 8
 [gem5-config] Block Size (bytes/system): 256
 RESULT: pattern=blocked, matrix_kb=128, N=128, tile=32, passes=3, sink=2.8289216457e+04
-Exiting @ tick 6389976064000 because exiting with last active thread context
+Exiting @ tick 191118397000 because exiting with last active thread context

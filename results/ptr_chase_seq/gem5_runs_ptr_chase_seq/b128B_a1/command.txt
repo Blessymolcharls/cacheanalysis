@@ -1,1 +1,1 @@
-../gem5/build/X86/gem5.opt --outdir=results/ptr_chase_seq/gem5_runs_ptr_chase_seq/b128B_a1 scripts/gem5_cache_sweep.py --cmd=benchmarks/bin/ptr_chase_seq --workload-name=ptr_chase_seq --cpu-type=TimingSimpleCPU --mem-size=2GB --cache-size-kb=32 --block-size-bytes=128 --assoc=1
+../gem5/build/X86/gem5.opt --outdir=results/ptr_chase_seq/gem5_runs_ptr_chase_seq/b128B_a1 scripts/gem5_cache_sweep.py --cmd=benchmarks/bin/ptr_chase_seq --workload-name=ptr_chase_seq --cpu-type=AtomicSimpleCPU --mem-size=2GB --cache-size-kb=32 --block-size-bytes=128 --assoc=1

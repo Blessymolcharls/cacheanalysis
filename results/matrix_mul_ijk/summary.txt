@@ -7,12 +7,12 @@ Total configurations: 12
 
 Workload: matrix_mul_ijk
 --------------------------------------------------------------------------------
-Block=64B | Assoc=1-way | Accesses=602056 | Hits=340453 | Misses=261603 | HitRate=0.565484 | MissRate=0.434516
-Block=64B | Assoc=2-way | Accesses=602657 | Hits=342169 | Misses=260488 | HitRate=0.567767 | MissRate=0.432233
-Block=64B | Assoc=4-way | Accesses=1258197 | Hits=668962 | Misses=589235 | HitRate=0.531683 | MissRate=0.468317
-Block=64B | Assoc=8-way | Accesses=1249317 | Hits=664624 | Misses=584693 | HitRate=0.531990 | MissRate=0.468010
-Block=128B | Assoc=1-way | Accesses=43787 | Hits=41710 | Misses=2077 | HitRate=0.952566 | MissRate=0.047434
-Block=128B | Assoc=2-way | Accesses=46678 | Hits=45462 | Misses=1216 | HitRate=0.973949 | MissRate=0.026051
+Block=64B | Assoc=1-way | Accesses=17161405 | Hits=8577780 | Misses=8583625 | HitRate=0.499830 | MissRate=0.500170
+Block=64B | Assoc=2-way | Accesses=17161405 | Hits=8600287 | Misses=8561118 | HitRate=0.501141 | MissRate=0.498859
+Block=64B | Assoc=4-way | Accesses=17161405 | Hits=8601761 | Misses=8559644 | HitRate=0.501227 | MissRate=0.498773
+Block=64B | Assoc=8-way | Accesses=17161405 | Hits=8602634 | Misses=8558771 | HitRate=0.501278 | MissRate=0.498722
+Block=128B | Assoc=1-way | Accesses=17161397 | Hits=8559334 | Misses=8602063 | HitRate=0.498755 | MissRate=0.501245
+Block=128B | Assoc=2-way | Accesses=17161397 | Hits=8601126 | Misses=8560271 | HitRate=0.501190 | MissRate=0.498810
 Block=128B | Assoc=4-way | Accesses=17161397 | Hits=8602102 | Misses=8559295 | HitRate=0.501247 | MissRate=0.498753
 Block=128B | Assoc=8-way | Accesses=17161397 | Hits=8602667 | Misses=8558730 | HitRate=0.501280 | MissRate=0.498720
 Block=256B | Assoc=1-way | Accesses=17161396 | Hits=8511094 | Misses=8650302 | HitRate=0.495944 | MissRate=0.504056

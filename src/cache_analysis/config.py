@@ -191,7 +191,7 @@ class Gem5RunConfig:
             raise ValueError("workload_name must be provided")
         if self.max_ticks < 0:
             raise ValueError("max_ticks must be >= 0")
-        if self.cpu_type not in {"TimingSimpleCPU", "MinorCPU"}:
+        if self.cpu_type not in {"TimingSimpleCPU", "MinorCPU", "AtomicSimpleCPU"}:
             raise ValueError(
                 "cpu_type must be one of: TimingSimpleCPU, MinorCPU, AtomicSimpleCPU"
             )
